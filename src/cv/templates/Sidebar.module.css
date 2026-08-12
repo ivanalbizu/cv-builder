@@ -1,0 +1,426 @@
+/* =========================================================================
+   PLANTILLA: BARRA LATERAL
+   Patrón `34% 1fr` que CLAUDE.md §2 da por validado. Mismos tokens y mismas
+   reglas de paginación que «Una columna»: lo único que cambia es dónde cae
+   cada bloque, nunca el contenido.
+
+   Paginación (CLAUDE.md §2): `break-inside: avoid` va en los ITEMS.
+   ========================================================================= */
+
+.page {
+  display: grid;
+  grid-template-columns: 34% 1fr;
+  min-height: inherit;
+}
+
+/* ------------------------------------------------------------------ aside */
+
+.aside {
+  background: linear-gradient(160deg, var(--primary) 0%, var(--primary-soft) 100%);
+  color: #fff;
+  padding: 9mm 7mm;
+  /* El fondo debe llegar hasta el borde de la hoja aunque el contenido sea
+     corto; en print, la columna se estira con la página. */
+  display: flex;
+  flex-direction: column;
+  gap: 6mm;
+}
+
+/* Auto-contraste: con un principal claro, el blanco no se lee. */
+:global(.cv-page[data-header='light']) .aside {
+  color: #22303a;
+}
+:global(.cv-page[data-header='light']) .asideTitle {
+  color: var(--primary);
+  border-bottom-color: var(--primary);
+}
+:global(.cv-page[data-header='light']) .contact a,
+:global(.cv-page[data-header='light']) .contact span {
+  color: #22303a;
+}
+:global(.cv-page[data-header='light']) .contact svg {
+  fill: var(--primary);
+}
+:global(.cv-page[data-header='light']) .level {
+  color: var(--primary);
+  border-color: var(--primary);
+}
+
+.photoWrap {
+  display: flex;
+  justify-content: center;
+}
+
+.photo {
+  width: 38mm;
+  height: 38mm;
+  border: 1.2mm solid var(--accent);
+  object-position: center;
+}
+
+.photoCircle {
+  border-radius: 50%;
+}
+
+.photoRect {
+  border-radius: 2mm;
+}
+
+.identity {
+  text-align: center;
+}
+
+.name {
+  font-family: var(--display);
+  font-size: 19pt;
+  line-height: 1.1;
+  font-weight: 400;
+  margin: 0 0 1.5mm;
+}
+
+.role {
+  font-size: 8.6pt;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: var(--accent-soft);
+  margin: 0;
+}
+
+.asideTitle {
+  font-size: 9pt;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1.6px;
+  margin: 0 0 2.4mm;
+  padding-bottom: 1.2mm;
+  border-bottom: 0.5mm solid var(--accent);
+  display: flex;
+  align-items: center;
+  gap: 2mm;
+  break-after: avoid;
+  page-break-after: avoid;
+}
+
+.asideTitle svg {
+  width: 3.8mm;
+  height: 3.8mm;
+  fill: var(--accent);
+  flex: 0 0 auto;
+}
+
+.contact {
+  display: flex;
+  flex-direction: column;
+  gap: 2mm;
+  font-size: 8.8pt;
+}
+
+.contact a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.contact span {
+  display: flex;
+  align-items: flex-start;
+  gap: 2mm;
+  /* Un email largo debe partir, no desbordar la columna estrecha. */
+  overflow-wrap: anywhere;
+}
+
+.contact svg {
+  width: 3.4mm;
+  height: 3.4mm;
+  fill: var(--accent-soft);
+  flex: 0 0 auto;
+  margin-top: 0.5mm;
+}
+
+/* Idiomas y competencias viven en la barra: son bloques cortos. */
+
+.languages {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 2.4mm;
+}
+
+.language {
+  display: flex;
+  align-items: baseline;
+  gap: 2mm;
+  font-size: 9pt;
+  break-inside: avoid;
+  page-break-inside: avoid;
+}
+
+.language strong {
+  font-weight: 700;
+}
+
+.language em {
+  font-style: normal;
+  opacity: 0.75;
+  font-size: 8.2pt;
+}
+
+.level {
+  margin-left: auto;
+  font-size: 8pt;
+  font-weight: 700;
+  letter-spacing: 0.6px;
+  color: var(--accent-soft);
+  border: 0.3mm solid var(--accent-soft);
+  border-radius: 999px;
+  padding: 0.4mm 2mm;
+  white-space: nowrap;
+}
+
+.skills {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.4mm;
+}
+
+.skills li {
+  font-size: 8.4pt;
+  border: 0.3mm solid var(--accent-soft);
+  border-radius: 999px;
+  padding: 0.7mm 2.4mm;
+  break-inside: avoid;
+}
+
+.asideText {
+  margin: 0;
+  font-size: 8.8pt;
+  line-height: 1.4;
+  white-space: pre-wrap;
+}
+
+/* ------------------------------------------------------------------- main */
+
+.main {
+  padding: 9mm 9mm 9mm 8mm;
+  min-width: 0;
+}
+
+.section {
+  margin-bottom: var(--section-gap);
+}
+
+.sectionTitle {
+  display: flex;
+  align-items: center;
+  gap: 2.4mm;
+  font-size: 10pt;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1.6px;
+  color: var(--primary);
+  margin: 0 0 2.4mm;
+  padding-bottom: 1.2mm;
+  border-bottom: 0.5mm solid var(--accent-soft);
+  break-after: avoid;
+  page-break-after: avoid;
+}
+
+.sectionTitle svg {
+  width: 4.2mm;
+  height: 4.2mm;
+  fill: var(--accent);
+  flex: 0 0 auto;
+}
+
+.summary {
+  background: var(--surface);
+  border-left: 1mm solid var(--accent);
+  padding: 3mm 3.6mm;
+  margin: 0;
+  font-size: 9pt;
+  line-height: 1.35;
+}
+
+/* --------------------------------------------------------- experiencia */
+
+.jobs {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.jobItem {
+  padding-bottom: var(--item-gap);
+  break-inside: avoid;
+  page-break-inside: avoid;
+}
+
+.jobItem:last-child {
+  padding-bottom: 0;
+}
+
+.jobHead {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 3mm;
+}
+
+.org {
+  font-family: var(--serif);
+  font-size: 11.4pt;
+  color: var(--primary);
+  margin: 0;
+  font-weight: 400;
+}
+
+.rating {
+  display: inline-flex;
+  gap: 0.4mm;
+  vertical-align: -0.5mm;
+}
+
+.rating svg {
+  width: 3.2mm;
+  height: 3.2mm;
+  fill: var(--accent);
+}
+
+.city {
+  color: var(--ink-soft);
+  font-size: 9.6pt;
+}
+
+.dates {
+  flex: 0 0 auto;
+  font-size: 8.4pt;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  color: var(--ink-soft);
+  white-space: nowrap;
+}
+
+.datesCurrent {
+  color: var(--accent);
+}
+
+.jobRole {
+  font-size: 9.2pt;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--accent);
+  margin: 0.4mm 0 1.4mm;
+}
+
+.bullets {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.bullets li {
+  position: relative;
+  padding-left: 3.6mm;
+  margin-bottom: 0.8mm;
+  font-size: 9.4pt;
+  break-inside: avoid;
+}
+
+.bullets li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 1.6mm;
+  width: 1.4mm;
+  height: 1.4mm;
+  border-radius: 50%;
+  background: var(--accent-soft);
+}
+
+.jobTags {
+  margin: 1.4mm 0 0;
+  font-size: 8.4pt;
+  color: var(--ink-soft);
+  display: flex;
+  align-items: flex-start;
+  gap: 1.8mm;
+}
+
+.jobTags svg {
+  width: 3.4mm;
+  height: 3.4mm;
+  fill: var(--accent);
+  flex: 0 0 auto;
+  margin-top: 0.3mm;
+}
+
+.jobTags strong {
+  color: var(--primary);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-size: 7.8pt;
+}
+
+/* -------------------------------------------------------------- formación */
+
+.eduItem {
+  margin-bottom: 2.4mm;
+  break-inside: avoid;
+  page-break-inside: avoid;
+}
+
+.eduItem:last-child {
+  margin-bottom: 0;
+}
+
+.eduItem h3 {
+  font-family: var(--serif);
+  font-size: 10.6pt;
+  font-weight: 400;
+  color: var(--primary);
+  margin: 0;
+}
+
+.eduItem p {
+  margin: 0.4mm 0 0;
+  font-size: 9.2pt;
+  color: var(--ink-soft);
+}
+
+.year {
+  font-size: 8.6pt;
+  font-weight: 700;
+  color: var(--accent);
+  letter-spacing: 0.5px;
+}
+
+.customBody {
+  margin: 0;
+  font-size: 9.2pt;
+  white-space: pre-wrap;
+}
+
+/* ---------------------------------------------------------------- vacíos */
+
+.placeholder {
+  color: var(--ink-soft);
+  opacity: 0.45;
+  font-style: italic;
+}
+
+@media print {
+  .placeholder {
+    visibility: hidden;
+  }
+
+  /* En pantalla la hoja tiene min-height; al imprimir se anula, así que la
+     barra necesita ocupar toda la altura de la página por su cuenta. */
+  .page {
+    min-height: 297mm;
+  }
+}

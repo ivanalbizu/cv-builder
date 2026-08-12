@@ -8,6 +8,7 @@ import type {
   TemplateProps,
 } from '../../core/types';
 import { Icon, Rating } from '../icons';
+import { CONTACT_ICON, formatDates, isNarrowSection } from './shared';
 import s from './SingleColumn.module.css';
 
 /**
@@ -18,13 +19,6 @@ import s from './SingleColumn.module.css';
  * un `page.pdf()` de Playwright (fase 3).
  */
 
-const CONTACT_ICON = {
-  location: 'location',
-  phone: 'phone',
-  email: 'mail',
-  link: 'link',
-} as const;
-
 function ContactRow({ link }: { link: ContactLink }) {
   const content = link.url ? <a href={link.url}>{link.label}</a> : link.label;
   return (
@@ -33,11 +27,6 @@ function ContactRow({ link }: { link: ContactLink }) {
       {content}
     </span>
   );
-}
-
-function formatDates(item: ExperienceItem): string {
-  const end = item.current ? 'Actualidad' : item.end;
-  return [item.start, end].filter(Boolean).join(' — ');
 }
 
 function ExperienceEntry({ item }: { item: ExperienceItem }) {
@@ -170,8 +159,7 @@ function SectionBlock({ section }: { section: Section }) {
  * quedan exactamente dos seguidas: con una o con tres, a ancho completo.
  */
 function layoutSections(sections: Section[]): (Section | Section[])[] {
-  const isNarrow = (x: Section) =>
-    x.type === 'education' || x.type === 'languages' || x.type === 'skills';
+  const isNarrow = (x: Section) => x.type === 'education' || isNarrowSection(x);
 
   const out: (Section | Section[])[] = [];
   for (let i = 0; i < sections.length; i += 1) {

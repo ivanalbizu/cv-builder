@@ -1,0 +1,68 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: rgba(18, 27, 36, 0.55);
+}
+
+.dialog {
+  width: min(520px, 100%);
+  background: var(--app-panel);
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.3);
+}
+
+/* react-easy-crop se posiciona en absoluto: necesita un contenedor con altura. */
+.stage {
+  position: relative;
+  height: 340px;
+  background: #2b3640;
+}
+
+.controls {
+  padding: 14px 16px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.zoom {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--app-ink-soft);
+}
+
+.zoom input {
+  flex: 1 1 auto;
+}
+
+.note {
+  margin: 0;
+  font-size: 11px;
+  line-height: 1.45;
+  color: var(--app-ink-soft);
+}
+
+.error {
+  margin: 0;
+  font-size: 11px;
+  color: #a11d13;
+  background: #fdeceb;
+  border: 1px solid #f3bdb8;
+  border-radius: 8px;
+  padding: 8px 10px;
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}

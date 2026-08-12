@@ -355,21 +355,40 @@ pdfinfo cv.pdf   # comprobar «Pages: 1» y «Page size: A4»
 
 ---
 
-## 14. Estado de la implementación (fases 0–1 + adelantos)
+## 14. Estado de la implementación (fases 0–2 completas)
 
-**Hecho y verificado** (51 tests en verde; PDF generado con Chrome headless:
-1 página A4, fondos conservados, sin página en blanco final, texto seleccionable):
+**Hecho y verificado** (70 tests en verde; PDF generado con Chrome headless para
+**cada plantilla**: 1 página A4, fondos conservados, sin página en blanco final,
+texto seleccionable):
 
-- Fase 0 completa: Vite + React + TS estricto, ESLint, Prettier, CI en
+- **Fase 0 completa:** Vite + React + TS estricto, ESLint, Prettier, CI en
   `.github/workflows/ci.yml`.
-- Fase 1 completa: store Zustand + capa de comandos, plantilla `SingleColumn`
-  portada del CV de referencia, export por impresión, semilla ficticia.
-- **Adelantado de fase 2** (salía casi gratis con los tokens ya puestos):
-  los 4 temas, pickers de color con auto-contraste, densidad, CRUD de todas las
-  secciones, subida de foto, persistencia en localStorage e import/export JSON.
+- **Fase 1 completa:** store Zustand + capa de comandos, plantilla
+  `SingleColumn` portada del CV de referencia, export por impresión, semilla.
+- **Fase 2 completa:** las dos plantillas (`single-column` y `sidebar`), los 4
+  temas con pickers y auto-contraste, densidad, CRUD de todas las secciones,
+  reordenado por arrastre (`@dnd-kit`), subida y **recorte** de foto
+  (`react-easy-crop`), persistencia en localStorage e import/export JSON.
 
-**Pendiente:** 2ª plantilla (barra lateral), recorte de imagen (`react-easy-crop`),
-reordenar con `@dnd-kit` (hoy es con botones ↑/↓), y las fases 3–5.
+**Parámetros de URL** (portados del CV de referencia, útiles para generar PDF
+por tema sin tocar la UI y como base de la fase 3):
+```
+?template=sidebar&theme=lujo&primary=%23004b8d&accent=%23c8102e&density=comfy
+```
+Solo tocan TEMA y PLANTILLA; el contenido nunca se lee de la URL.
+
+**Pendiente:** fases 3–5 (pagedjs multipágina, PDF de servidor con Playwright y
+test de nº de páginas, WebMCP, pulido).
+
+### Cómo añadir una plantilla
+
+1. `src/cv/templates/MiPlantilla.tsx` + `.module.css`, componente **puro**
+   respecto a (`data`, `theme`).
+2. Registrarla en `src/cv/templates/index.tsx`.
+3. Añadirla al array `TEMPLATES` de `src/cv/print.test.ts`: el checklist de
+   impresión de §12 se aplica a todas, no solo a la primera.
+4. Reutilizar `templates/shared.ts` para fechas e iconos de contacto, para que
+   las plantillas no diverjan en cómo presentan lo mismo.
 
 ### Decisiones que se desvían de lo escrito arriba
 

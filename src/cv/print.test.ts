@@ -15,8 +15,25 @@ const read = (relative: string) =>
   readFileSync(fileURLToPath(new URL(relative, import.meta.url)), 'utf8');
 
 const printCss = read('./print.css');
-const templateCss = read('./templates/SingleColumn.module.css');
 const canvasCss = read('./canvas/canvas.css');
+
+/**
+ * Toda plantilla nueva entra aquí: el checklist de impresión se aplica a
+ * TODAS, no solo a la primera que escribimos. Los selectores son los que cada
+ * plantilla usa para sus items repetibles.
+ */
+const TEMPLATES = [
+  {
+    name: 'SingleColumn',
+    css: read('./templates/SingleColumn.module.css'),
+    items: ['.jobItem', '.eduItem', '.language'],
+  },
+  {
+    name: 'Sidebar',
+    css: read('./templates/Sidebar.module.css'),
+    items: ['.jobItem', '.eduItem', '.language'],
+  },
+];
 
 /** Extrae el cuerpo del bloque `@media print { ... }`. */
 function printBlock(css: string): string {
@@ -72,33 +89,33 @@ describe('canvas.css', () => {
   });
 });
 
-describe('SingleColumn: reglas de paginación', () => {
-  /**
-   * Cuerpo de la primera regla cuyo selector use la clase `name`.
-   * El lookahead evita que `.language` se coma la regla de `.languages`.
-   */
-  function ruleBody(css: string, name: string): string {
-    const re = new RegExp(`\\${name}(?![\\w-])[^{}]*\\{([^}]*)\\}`);
-    return re.exec(css)?.[1] ?? '';
-  }
+/**
+ * Cuerpo de la primera regla cuyo selector use la clase `name`.
+ * El lookahead evita que `.language` se coma la regla de `.languages`.
+ */
+function ruleBody(css: string, name: string): string {
+  const re = new RegExp(`\\${name}(?![\\w-])[^{}]*\\{([^}]*)\\}`);
+  return re.exec(css)?.[1] ?? '';
+}
 
+describe.each(TEMPLATES)('$name: reglas de paginación', ({ css, items }) => {
   it('aplica break-inside: avoid a los ITEMS', () => {
-    for (const item of ['.jobItem', '.eduItem', '.language']) {
-      expect(ruleBody(templateCss, item)).toMatch(/break-inside:\s*avoid/);
+    for (const item of items) {
+      expect(ruleBody(css, item), `falta en ${item}`).toMatch(/break-inside:\s*avoid/);
     }
   });
 
   it('NO lo aplica a la sección entera: empujaría la sección a la página siguiente', () => {
-    expect(ruleBody(templateCss, '.section')).not.toMatch(/break-inside:\s*avoid/);
+    expect(ruleBody(css, '.section')).not.toMatch(/break-inside:\s*avoid/);
   });
 
   it('evita que un título de sección quede huérfano al final de la página', () => {
-    expect(ruleBody(templateCss, '.sectionTitle')).toMatch(/break-after:\s*avoid/);
+    expect(ruleBody(css, '.sectionTitle')).toMatch(/break-after:\s*avoid/);
   });
 
   it('no hardcodea colores: todo sale de los tokens del tema', () => {
     // Se permiten el blanco/negro puros de los rellenos y las sombras rgba.
-    const colors = templateCss.match(/#[0-9a-f]{3,6}\b/gi) ?? [];
+    const colors = css.match(/#[0-9a-f]{3,6}\b/gi) ?? [];
     const notTokens = colors.filter((c) => !/^#(fff|ffffff|000|000000|22303a)$/i.test(c));
     expect(notTokens).toEqual([]);
   });

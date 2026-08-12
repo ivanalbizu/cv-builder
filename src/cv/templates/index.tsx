@@ -1,6 +1,7 @@
 import type { ComponentType } from 'react';
 import type { TemplateMeta, TemplateProps } from '../../core/types';
 import { SingleColumn } from './SingleColumn';
+import { Sidebar } from './Sidebar';
 
 /**
  * Registro de plantillas. Añadir una plantilla = añadir una entrada aquí;
@@ -17,6 +18,13 @@ export const TEMPLATES: TemplateEntry[] = [
     layout: 'single',
     description: 'Cabecera a todo lo ancho y timeline de experiencia. Validada a 1 página A4.',
     Component: SingleColumn,
+  },
+  {
+    id: 'sidebar',
+    name: 'Barra lateral',
+    layout: 'sidebar',
+    description: 'Columna estrecha con foto, contacto e idiomas; experiencia a la derecha.',
+    Component: Sidebar,
   },
 ];
 

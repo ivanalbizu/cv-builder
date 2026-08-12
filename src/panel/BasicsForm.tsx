@@ -3,6 +3,7 @@ import { commands } from '../core/commands';
 import { useCVStore } from '../core/store';
 import type { ContactKind } from '../core/types';
 import { fileToDataURL, photoWarning } from '../lib/image';
+import { PhotoCropper } from './PhotoCropper';
 import { Actions, Field, Panel, Row, TextAreaField, TextField } from './ui';
 import s from './BasicsForm.module.css';
 
@@ -19,11 +20,20 @@ export function BasicsForm() {
   const [warning, setWarning] = useState<string | null>(
     basics.photo ? photoWarning(basics.photo) : null,
   );
+  const [cropping, setCropping] = useState(false);
+  /**
+   * Original de la subida, para poder reencuadrar sin ir perdiendo píxeles en
+   * cada pasada. Vive solo en memoria a propósito: guardarlo en el documento
+   * duplicaría el peso del JSON exportado. Tras recargar la página se recorta
+   * sobre la foto actual, que es lo único que sobrevive.
+   */
+  const [original, setOriginal] = useState<string | null>(null);
 
   async function onPickPhoto(file: File | undefined) {
     if (!file) return;
     const dataUrl = await fileToDataURL(file);
     setWarning(photoWarning(dataUrl));
+    setOriginal(dataUrl);
     commands.setPhoto(dataUrl);
   }
 
@@ -123,15 +133,21 @@ export function BasicsForm() {
               Subir imagen
             </button>
             {basics.photo ? (
-              <button
-                className="btn btn-sm btn-danger"
-                onClick={() => {
-                  commands.setPhoto(null);
-                  setWarning(null);
-                }}
-              >
-                Quitar
-              </button>
+              <>
+                <button className="btn btn-sm" onClick={() => setCropping(true)}>
+                  Recortar
+                </button>
+                <button
+                  className="btn btn-sm btn-danger"
+                  onClick={() => {
+                    commands.setPhoto(null);
+                    setOriginal(null);
+                    setWarning(null);
+                  }}
+                >
+                  Quitar
+                </button>
+              </>
             ) : null}
           </Actions>
         </div>
@@ -146,6 +162,20 @@ export function BasicsForm() {
             e.target.value = '';
           }}
         />
+
+        {cropping && basics.photo ? (
+          <PhotoCropper
+            source={original ?? basics.photo}
+            shape={basics.photoOptions.shape}
+            onCancel={() => setCropping(false)}
+            onApply={(dataUrl) => {
+              commands.setPhoto(dataUrl);
+              // Un recorte siempre sale en PNG, así que el aviso de JPEG ya no aplica.
+              setWarning(null);
+              setCropping(false);
+            }}
+          />
+        ) : null}
 
         {warning ? <p className={s.warning}>{warning}</p> : null}
 

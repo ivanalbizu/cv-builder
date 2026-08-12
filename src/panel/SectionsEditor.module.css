@@ -46,3 +46,8 @@
   font-size: 12px;
   color: var(--app-ink-soft);
 }
+
+.sectionHint {
+  font-size: 11px;
+  color: var(--app-ink-soft);
+}

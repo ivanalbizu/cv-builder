@@ -115,47 +115,33 @@ export function Actions({ children }: { children: ReactNode }) {
   return <div className={s.actions}>{children}</div>;
 }
 
-/** Tarjeta de un item editable, con sus botones de subir/bajar/eliminar. */
+/**
+ * Tarjeta de un item editable.
+ *
+ * El asa de arrastre la inyecta quien la usa (`handle`), porque el reordenado
+ * lo gobierna `SortableList` y esta tarjeta no debe saber de dnd-kit.
+ */
 export function ItemCard({
   title,
-  onMoveUp,
-  onMoveDown,
+  handle,
   onRemove,
   children,
 }: {
   title: string;
-  onMoveUp?: () => void;
-  onMoveDown?: () => void;
+  handle?: ReactNode;
   onRemove: () => void;
   children: ReactNode;
 }) {
   return (
     <div className={s.card}>
       <div className={s.cardHead}>
+        {handle}
         <strong className={s.cardTitle}>{title}</strong>
         <div className={s.cardTools}>
           <button
-            className="btn btn-ghost btn-sm"
-            onClick={onMoveUp}
-            disabled={!onMoveUp}
-            aria-label="Subir"
-            title="Subir"
-          >
-            ↑
-          </button>
-          <button
-            className="btn btn-ghost btn-sm"
-            onClick={onMoveDown}
-            disabled={!onMoveDown}
-            aria-label="Bajar"
-            title="Bajar"
-          >
-            ↓
-          </button>
-          <button
             className="btn btn-ghost btn-sm btn-danger"
             onClick={onRemove}
-            aria-label="Eliminar"
+            aria-label={`Eliminar ${title}`}
             title="Eliminar"
           >
             ✕
