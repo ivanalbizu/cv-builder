@@ -43,6 +43,9 @@ export default defineConfig({
     },
   },
   test: {
+    // Los specs de `e2e/` los corre Playwright; Vitest los cogería por su
+    // nombre `*.spec.ts` y fallaría al no existir sus globales.
+    exclude: ['e2e/**', 'node_modules/**', 'dist/**'],
     environment: 'jsdom',
     globals: true,
     setupFiles: ['./src/test/setup.ts'],

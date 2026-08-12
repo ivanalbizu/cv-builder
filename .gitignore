@@ -11,3 +11,9 @@ coverage
 # Llevan la foto incrustada en base64, así que son tan sensibles como el CV
 # en papel. Guárdalos fuera del repositorio (CLAUDE.md §15).
 *.cv.json
+
+# Playwright
+/test-results
+/playwright-report
+/blob-report
+/playwright/.cache
