@@ -1,0 +1,69 @@
+.wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.lista {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.fila {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+}
+
+.etiqueta {
+  flex: 1 1 auto;
+  color: var(--app-ink-soft);
+}
+
+.ratio {
+  font-variant-numeric: tabular-nums;
+  color: var(--app-ink-soft);
+}
+
+.nivel {
+  flex: 0 0 auto;
+  min-width: 62px;
+  text-align: center;
+  font-weight: 700;
+  border-radius: 999px;
+  padding: 1px 8px;
+}
+
+.AAA,
+.AA {
+  background: var(--app-ok-bg);
+  color: var(--app-ok-ink);
+}
+
+.insuficiente {
+  background: #fdeceb;
+  color: #a11d13;
+}
+
+.nota {
+  margin: 0;
+  font-size: 11px;
+  line-height: 1.45;
+  color: var(--app-ink-soft);
+}
+
+/* Dos muestras juntas: el color elegido y el derivado para texto. */
+.muestra {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 3px;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  vertical-align: -1px;
+  margin-right: 3px;
+}
