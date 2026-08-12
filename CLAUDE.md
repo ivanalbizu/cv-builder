@@ -264,10 +264,20 @@ Objetivo: que un **agente en el navegador** ayude a generar/mejorar el CV
 (redactar resúmenes, reescribir bullets en tono profesional, sugerir orden,
 aplicar tema de marca) llamando a la **capa de comandos** (§5.3).
 
-- **Diseño que lo habilita hoy mismo:** exponer `CVCommands` como una API estable
-  (`window.cvBuilder`) + un **catálogo de "tools"** (nombre, descripción, JSON
-  schema de args) que mapean 1:1 a esos comandos. Con eso, cualquier puente
-  agente↔web puede pilotar la app.
+- **HECHO (fase 4, paso 1):** `window.cvBuilder` expone los comandos sueltos
+  **y** el catálogo de herramientas: `tools()` devuelve nombre + descripción +
+  JSON Schema, y `callTool(name, args)` ejecuta validando antes. Está en
+  `src/agent/` y es **agnóstico del transporte**: no sabe nada de MCP.
+  - `schema.ts` declara los argumentos **una sola vez**; de ahí salen el JSON
+    Schema que lee el agente y la validación en tiempo de ejecución. Escribirlos
+    por separado los habría separado en cuanto alguien añadiera un campo.
+  - `callTool` **nunca lanza**: devuelve `{ok:false,error}` con un mensaje que
+    el agente puede leer y corregir, y no toca el documento si la validación
+    falla. Un agente se equivoca a menudo; ese es el punto donde se decide entre
+    un error legible y un CV corrupto.
+  - `e2e/agent.spec.ts` pilota la app entera solo con `tools()`/`callTool()`:
+    lee el CV, añade un puesto, aplica colores de marca y comprueba que sigue
+    saliendo en 1 página A4.
 - **WebMCP es experimental y la especificación se mueve** (propuestas tipo
   WebMCP / "MCP-B" que exponen tools desde una pestaña del navegador). **Verificar
   el estado actual del estándar antes de implementar**; no fijar una API concreta
