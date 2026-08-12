@@ -1,6 +1,21 @@
+/**
+ * El ancho del panel lo decide lo que necesita el LIENZO, no un número fijo.
+ *
+ * Con un ancho fijo hay que elegir: 360px desaprovecha la pantalla grande y
+ * 500px ahoga la mediana. Y un breakpoint solo cambia el problema de sitio —
+ * sigue habiendo un salto brusco justo por encima del corte.
+ *
+ * Aquí el panel se queda con lo que sobra después de reservar la hoja a tamaño
+ * real: mientras eso quepa, el CV se ve al 100% y el panel aprovecha el resto.
+ * Por debajo, el panel se planta en su mínimo legible y es el zoom el que cede.
+ */
 .panel {
-  flex: 0 0 360px;
-  width: 360px;
+  /* 210mm de hoja + los 24px de padding a cada lado de `.cv-viewport`. */
+  --panel-hueco-lienzo: calc(210mm + 48px);
+  --panel-ancho: clamp(300px, calc(100vw - var(--panel-hueco-lienzo)), 500px);
+
+  flex: 0 0 var(--panel-ancho);
+  width: var(--panel-ancho);
   display: flex;
   flex-direction: column;
   min-height: 0;
@@ -35,9 +50,5 @@
   min-height: 0;
 }
 
-@media (max-width: 900px) {
-  .panel {
-    flex-basis: 300px;
-    width: 300px;
-  }
-}
+/* El suelo del `clamp` ya cubre las pantallas estrechas: la media query que
+   había aquí bajaba a 300px, exactamente lo mismo, pero de golpe. */
