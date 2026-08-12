@@ -129,8 +129,9 @@ galería enorme de plantillas, i18n completa. (Se dejan para fases posteriores.)
   CSS-in-JS pesado en la zona imprimible.
 - **PDF:** primario `react-to-print` (envuelve `window.print()`). Fase 2:
   **Playwright** `page.pdf()` en servidor para fidelidad pixel-perfect y tests.
-- **Paginación multipágina (fase 2):** [`pagedjs`](https://pagedjs.org) para
-  previsualizar HTML paginado en A4 (page breaks reales en pantalla y print).
+- ~~**Paginación multipágina:** `pagedjs`~~ → **DESCARTADO** (ver §14). Metía un
+  segundo motor de paginación distinto del de Chrome y rompía el principio de
+  que la vista previa **es** la salida imprimible.
 - **Imagen:** `FileReader` → dataURL; recorte opcional con `react-easy-crop`.
 - **Drag & drop** (reordenar secciones/items): `@dnd-kit`.
 - **Test:** Vitest + React Testing Library; **Playwright** para e2e + snapshot de
@@ -223,7 +224,8 @@ Exponer también en `window.cvBuilder` (fallback sin MCP) para automatizar/teste
   pantalla (oculto en print). Zoom con `transform: scale()` para ajustar a la
   ventana (no afecta al print).
 - v1: 1–2 páginas; detectar **overflow** midiendo alto de contenido vs alto útil
-  y avisar ("se sale de 1 página"). v2: `pagedjs` para flujo real multipágina.
+  y avisar ("se sale de 1 página"). Implementado en `usePageMetrics`, con guías
+  de corte dibujadas sobre la hoja. (`pagedjs` quedó descartado — §14.)
 - Reutilizar `break-inside: avoid` por item; nunca por sección entera.
 
 ### 5.5 Exportación a PDF
@@ -296,7 +298,7 @@ aplicar tema de marca) llamando a la **capa de comandos** (§5.3).
   2ª plantilla (barra lateral). Persistencia local + import/export JSON.
 
 **Fase 3 — Paginación fiel + PDF servidor**
-- `pagedjs` para multipágina en pantalla. Detección de overflow y avisos.
+- Detección de overflow y avisos. (`pagedjs` evaluado y descartado — §14.)
   Servicio Playwright `page.pdf()` para PDF pixel-perfect. Tests de "nº de páginas".
 
 **Fase 4 — Agente / WebMCP (experimental)**
@@ -407,13 +409,12 @@ Solo tocan TEMA y PLANTILLA; el contenido nunca se lee de la URL.
   cromo oculto y colores del tema efectivamente pintados. Detección de
   desbordamiento ya estaba desde la fase 1.
 
-**Pendiente:** `pagedjs` (ver abajo), fase 4 (WebMCP) y fase 5 (pulido).
+**Pendiente:** fase 4 (WebMCP) y fase 5 (pulido).
 
-### `pagedjs`: recomendación de NO integrarlo
+### DECISIÓN TOMADA (Iván): `pagedjs` descartado
 
 §4 lo proponía para previsualizar el flujo multipágina. Tras montar el resto de
-la fase 3, la recomendación es **descartarlo**, y conviene decidirlo antes de
-gastar esfuerzo:
+la fase 3 se evaluó y **se descarta**, por tres motivos:
 
 1. **Choca con el principio rector.** §4 fija que «la vista previa del lienzo
    **es** la salida imprimible (misma fuente)». pagedjs reescribe el DOM con su
@@ -429,7 +430,8 @@ gastar esfuerzo:
 
 Si en algún momento hace falta multipágina fiel (CVs académicos largos), la
 alternativa barata es renderizar el PDF con Playwright y mostrarlo incrustado,
-en vez de re-paginar en el navegador.
+en vez de re-paginar en el navegador. **Con la fase 3 hecha, eso ya es casi
+gratis:** `scripts/render-pdf.mjs` produce el PDF y solo faltaría enseñarlo.
 
 ### Cómo añadir una plantilla
 
