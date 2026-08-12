@@ -1,0 +1,27 @@
+.item {
+  position: relative;
+}
+
+/* El elemento levantado va por encima de sus hermanos y se separa un poco. */
+.dragging {
+  z-index: 2;
+  opacity: 0.9;
+}
+
+.dragging > * {
+  box-shadow: 0 6px 18px rgba(18, 58, 81, 0.22);
+  border-color: var(--app-brand);
+}
+
+.handle {
+  cursor: grab;
+  font-size: 14px;
+  line-height: 1;
+  letter-spacing: -1px;
+  padding: 4px 6px;
+  touch-action: none;
+}
+
+.handle:active {
+  cursor: grabbing;
+}

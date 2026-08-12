@@ -10,6 +10,7 @@ import type {
   SkillItem,
 } from '../core/types';
 import { ICON_NAMES } from '../cv/icons';
+import { DragHandle, SortableItem, SortableList } from './Sortable';
 import { Actions, ItemCard, Panel, Row, TextAreaField, TextField } from './ui';
 import s from './SectionsEditor.module.css';
 
@@ -41,14 +42,22 @@ export function SectionsEditor() {
 
   return (
     <>
-      {sections.map((section, index) => (
-        <SectionPanel
-          key={section.id}
-          section={section}
-          index={index}
-          total={sections.length}
-        />
-      ))}
+      <SortableList
+        ids={sections.map((section) => section.id)}
+        onReorder={(id, to) => commands.reorderSection(id, to)}
+      >
+        {sections.map((section, index) => (
+          <SortableItem key={section.id} id={section.id}>
+            {({ handleProps }) => (
+              <SectionPanel
+                section={section}
+                index={index}
+                handle={<DragHandle label={`sección ${section.title}`} {...handleProps} />}
+              />
+            )}
+          </SortableItem>
+        ))}
+      </SortableList>
 
       <Panel title="Añadir sección" defaultOpen>
         <Actions>
@@ -70,31 +79,19 @@ export function SectionsEditor() {
 function SectionPanel({
   section,
   index,
-  total,
+  handle,
 }: {
   section: Section;
   index: number;
-  total: number;
+  handle: React.ReactNode;
 }) {
   const count = section.type === 'custom' ? undefined : section.items.length;
 
   return (
     <Panel title={section.title || 'Sección'} badge={count} defaultOpen={index === 0}>
       <div className={s.sectionTools}>
-        <button
-          className="btn btn-ghost btn-sm"
-          disabled={index === 0}
-          onClick={() => commands.reorderSection(section.id, index - 1)}
-        >
-          ↑ Subir
-        </button>
-        <button
-          className="btn btn-ghost btn-sm"
-          disabled={index === total - 1}
-          onClick={() => commands.reorderSection(section.id, index + 1)}
-        >
-          ↓ Bajar
-        </button>
+        {handle}
+        <span className={s.sectionHint}>Arrastra para reordenar</span>
         <button
           className="btn btn-ghost btn-sm btn-danger"
           onClick={() => commands.removeSection(section.id)}
@@ -142,33 +139,39 @@ function SectionPanel({
 }
 
 function ItemList({ section }: { section: Exclude<Section, { type: 'custom' }> }) {
-  const move = (id: Id, to: number) => commands.reorderItem(section.id, id, to);
   const items = section.items;
 
   return (
     <>
-      {items.map((item, index) => (
-        <ItemCard
-          key={item.id}
-          title={itemTitle(item)}
-          onMoveUp={index > 0 ? () => move(item.id, index - 1) : undefined}
-          onMoveDown={index < items.length - 1 ? () => move(item.id, index + 1) : undefined}
-          onRemove={() => commands.removeItem(section.id, item.id)}
-        >
-          {section.type === 'experience' && (
-            <ExperienceFields sectionId={section.id} item={item as ExperienceItem} />
-          )}
-          {section.type === 'education' && (
-            <EducationFields sectionId={section.id} item={item as EducationItem} />
-          )}
-          {section.type === 'languages' && (
-            <LanguageFields sectionId={section.id} item={item as LanguageItem} />
-          )}
-          {section.type === 'skills' && (
-            <SkillFields sectionId={section.id} item={item as SkillItem} />
-          )}
-        </ItemCard>
-      ))}
+      <SortableList
+        ids={items.map((item) => item.id)}
+        onReorder={(id, to) => commands.reorderItem(section.id, id, to)}
+      >
+        {items.map((item) => (
+          <SortableItem key={item.id} id={item.id}>
+            {({ handleProps }) => (
+              <ItemCard
+                title={itemTitle(item)}
+                handle={<DragHandle label={itemTitle(item)} {...handleProps} />}
+                onRemove={() => commands.removeItem(section.id, item.id)}
+              >
+                {section.type === 'experience' && (
+                  <ExperienceFields sectionId={section.id} item={item as ExperienceItem} />
+                )}
+                {section.type === 'education' && (
+                  <EducationFields sectionId={section.id} item={item as EducationItem} />
+                )}
+                {section.type === 'languages' && (
+                  <LanguageFields sectionId={section.id} item={item as LanguageItem} />
+                )}
+                {section.type === 'skills' && (
+                  <SkillFields sectionId={section.id} item={item as SkillItem} />
+                )}
+              </ItemCard>
+            )}
+          </SortableItem>
+        ))}
+      </SortableList>
 
       <Actions>
         <button className="btn btn-sm" onClick={() => commands.addItem(section.id)}>
