@@ -419,8 +419,10 @@
   }
 
   /* En pantalla la hoja tiene min-height; al imprimir se anula, así que la
-     barra necesita ocupar toda la altura de la página por su cuenta. */
+     barra necesita ocupar toda la altura de la página por su cuenta. El alto
+     lo pone `print.css`: si hay pie de página, la caja útil mide menos y un
+     297mm fijo desbordaría, añadiendo una hoja en blanco. */
   .page {
-    min-height: 297mm;
+    min-height: var(--cv-alto-pagina, 297mm);
   }
 }

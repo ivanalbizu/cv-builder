@@ -5,9 +5,45 @@
    Guardar como PDF en Chrome: A4 · márgenes «Ninguno» · «Gráficos de fondo».
    ========================================================================= */
 
+/* =========================================================================
+   NUMERACIÓN DE PÁGINA
+   Solo cuando el CV pasa de una hoja: en un CV de una página, un «Página 1 de
+   1» queda peor que no poner nada, y CSS no sabe condicionar por el total.
+   Quien sí lo sabe es la app — `usePageMetrics` ya cuenta las páginas para el
+   badge y las guías —, así que marca `<html data-pages>` y aquí se decide.
+
+   El selector exige que el atributo EXISTA: si no se ha medido todavía, no se
+   numera. Un `:not([data-pages='1'])` a secas también casaría con el atributo
+   ausente y sacaría el pie en el primer render, antes de contar nada.
+
+   Las variables se definen en `:root` porque el contexto de `@page` no es un
+   elemento: solo hereda del raíz. Es la única excepción a la regla de meter los
+   tokens en `.cv-page` (CLAUDE.md §11), y no hay alternativa.
+   ========================================================================= */
+
+:root {
+  --cv-pie: '';
+  --cv-margen-pagina: 0;
+  /* Alto útil de la hoja; lo consume la plantilla de barra lateral. */
+  --cv-alto-pagina: 297mm;
+}
+
+:root[data-pages]:not([data-pages='1']) {
+  --cv-pie: 'Página ' counter(page) ' de ' counter(pages);
+  --cv-margen-pagina: 0 0 9mm;
+  --cv-alto-pagina: 288mm;
+}
+
 @page {
   size: A4;
-  margin: 0;
+  margin: var(--cv-margen-pagina);
+
+  @bottom-center {
+    content: var(--cv-pie);
+    font-family: system-ui, sans-serif;
+    font-size: 8pt;
+    color: #5c6b76;
+  }
 }
 
 @media print {

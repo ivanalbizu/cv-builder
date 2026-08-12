@@ -95,6 +95,20 @@ Todo esto ya está probado en el CV de referencia y hay que reaprovecharlo.
 - Para preview se puede cargar Google Fonts por `<link>`; para el PDF final la
   fuente debe estar **cargada/incrustada** (si es descargable/offline).
 
+### Numeración de página
+- Chrome **sí** soporta cajas de margen de `@page` con `counter(page)` /
+  `counter(pages)` (medido en el 151). Eso quita el motivo más habitual para
+  meter `pagedjs`. Lo que **no** soporta es `string-set` + `content: string()`,
+  o sea cabeceras que repitan contenido del documento en cada hoja.
+- Se numera **solo si el CV pasa de una página**: un «Página 1 de 1» queda peor
+  que nada, y CSS no sabe condicionar por el total. Lo decide la app —
+  `usePageMetrics` ya cuenta páginas— publicando `<html data-pages>`.
+- Las variables del pie van en `:root`, no en `.cv-page`: el contexto de `@page`
+  no es un elemento y solo hereda del raíz. Es la única excepción a §11.
+- Cuidado: activar el pie exige margen inferior de página, y eso encoge la caja
+  útil. Toda plantilla con altura fija para print debe leer `--cv-alto-pagina`
+  en vez de poner `297mm` a pelo, o aparecerá una hoja de más.
+
 ### Layout
 - Trabajar en **mm** para A4 (210×297). Patrones ya validados: una columna,
   **barra lateral** (grid `34% 1fr`), timeline con puntos alineados al eje, badges

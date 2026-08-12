@@ -51,9 +51,23 @@ function printBlock(css: string): string {
 }
 
 describe('print.css', () => {
-  it('define la página A4 sin márgenes', () => {
-    expect(printCss).toMatch(/@page\s*\{[^}]*size:\s*A4/);
-    expect(printCss).toMatch(/@page\s*\{[^}]*margin:\s*0/);
+  it('define la página A4', () => {
+    expect(printCss).toMatch(/@page\s*\{[\s\S]*?size:\s*A4/);
+  });
+
+  it('por defecto la hoja no lleva márgenes: es lo que da el sangrado completo', () => {
+    // El margen dejó de ser literal al añadir la numeración; ahora sale de una
+    // variable cuyo valor por defecto sigue siendo 0.
+    expect(printCss).toMatch(/@page\s*\{[\s\S]*?margin:\s*var\(--cv-margen-pagina\)/);
+    expect(printCss).toMatch(/:root\s*\{[^}]*--cv-margen-pagina:\s*0\s*;/);
+  });
+
+  it('solo numera cuando el recuento de páginas se ha medido y pasa de una', () => {
+    // `[data-pages]` tiene que estar presente en el selector: un
+    // `:not([data-pages='1'])` a secas casaría también con el atributo ausente
+    // y sacaría el pie en el primer render, antes de contar nada.
+    expect(printCss).toMatch(/:root\[data-pages\]:not\(\[data-pages='1'\]\)/);
+    expect(printCss).toMatch(/--cv-pie:\s*'Página '\s*counter\(page\)/);
   });
 
   it('conserva fondos y colores en el PDF', () => {

@@ -29,6 +29,17 @@ export function Preview() {
     if (pageWidth > 0) commands.setZoom(Math.min(1, available / pageWidth));
   }, [zoom]);
 
+  /**
+   * Publica el recuento de páginas en el elemento raíz.
+   *
+   * Va en `<html>` y no en la hoja porque el pie de página vive en `@page`, que
+   * es contexto de página y solo hereda custom properties del raíz. `print.css`
+   * lo lee para numerar únicamente cuando hay más de una página.
+   */
+  useEffect(() => {
+    document.documentElement.dataset.pages = String(metrics.pages);
+  }, [metrics.pages]);
+
   // Encajar al abrir, para no aterrizar en una hoja cortada.
   useEffect(() => {
     fitToWidth();
