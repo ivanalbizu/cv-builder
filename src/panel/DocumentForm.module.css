@@ -1,0 +1,17 @@
+.note {
+  margin: 0;
+  font-size: 11px;
+  line-height: 1.45;
+  color: var(--app-ink-soft);
+}
+
+.error {
+  margin: 0;
+  font-size: 11px;
+  line-height: 1.45;
+  color: #a11d13;
+  background: #fdeceb;
+  border: 1px solid #f3bdb8;
+  border-radius: 8px;
+  padding: 8px 10px;
+}

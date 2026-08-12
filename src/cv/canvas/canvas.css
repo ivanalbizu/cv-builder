@@ -1,0 +1,94 @@
+/* =========================================================================
+   LIENZO A4 — clases globales
+   Son globales (no CSS Modules) a propósito: `print.css` y los tests las
+   necesitan por nombre estable. Aquí solo va la HOJA; lo que va dentro es
+   cosa de cada plantilla.
+   ========================================================================= */
+
+.cv-viewport {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: auto;
+  padding: 24px;
+  background: var(--app-canvas-bg, #e9e6df);
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+/* El zoom vive aquí y NO en la hoja: al imprimir se anula sin tocar la maqueta.
+   `.cv-zoom-box` reserva el hueco escalado (un `transform` no ocupa espacio en
+   el layout, así que sin esta caja el scroll no cuadraría). */
+.cv-zoom-box {
+  flex: 0 0 auto;
+}
+
+.cv-zoom {
+  width: 210mm;
+  transform-origin: top left;
+}
+
+.cv-page {
+  width: 210mm;
+  min-height: 297mm;
+  background: #fff;
+  box-shadow: 0 10px 40px rgba(18, 58, 81, 0.18);
+  overflow: hidden;
+
+  /* Tipografía base de la hoja. Los valores concretos los pone el tema
+     (custom properties inline) y la densidad. */
+  font-family: var(--sans);
+  font-size: var(--body-size, 9.6pt);
+  line-height: var(--body-leading, 1.36);
+  color: var(--ink);
+  -webkit-font-smoothing: antialiased;
+}
+
+.cv-page * {
+  box-sizing: border-box;
+}
+
+/* Densidad: «compact» es la variante TITULARES ya validada a 1 página en el
+   proyecto de referencia; «comfy» respira más (puede pasar a 2 páginas). */
+.cv-page[data-density='compact'] {
+  --body-size: 9.6pt;
+  --body-leading: 1.36;
+  --header-pad: 6mm 13mm 5mm;
+  --body-pad: 4.5mm 13mm 0;
+  --section-gap: 2.8mm;
+  --item-gap: 3.2mm;
+}
+
+.cv-page[data-density='comfy'] {
+  --body-size: 10.4pt;
+  --body-leading: 1.45;
+  --header-pad: 9mm 13mm 7.5mm;
+  --body-pad: 7.5mm 13mm 0;
+  --section-gap: 5.5mm;
+  --item-gap: 4.4mm;
+}
+
+/* Guía de corte de página: marca dónde caería el salto en el PDF.
+   Solo pantalla — `print.css` la esconde. */
+.cv-page-guide {
+  position: absolute;
+  left: 0;
+  right: 0;
+  border-top: 1px dashed rgba(220, 38, 38, 0.55);
+  pointer-events: none;
+}
+
+.cv-page-guide::after {
+  content: attr(data-label);
+  position: absolute;
+  right: 4px;
+  top: 2px;
+  font: 600 8px/1 var(--app-sans, system-ui, sans-serif);
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: rgba(220, 38, 38, 0.8);
+}
+
+.cv-page-wrap {
+  position: relative;
+}

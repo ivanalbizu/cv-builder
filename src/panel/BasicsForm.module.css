@@ -1,0 +1,75 @@
+.contactRow {
+  display: grid;
+  grid-template-columns: 96px 1fr auto;
+  gap: 6px;
+  align-items: center;
+}
+
+.urlInput {
+  grid-column: 1 / -1;
+  font-size: 12px;
+}
+
+.select,
+.input {
+  width: 100%;
+  border: 1px solid var(--app-line);
+  border-radius: 8px;
+  padding: 7px 8px;
+  background: #fff;
+  font-size: 13px;
+  min-width: 0;
+}
+
+.select:focus,
+.input:focus {
+  outline: 2px solid var(--app-brand);
+  outline-offset: -1px;
+}
+
+.photoTop {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.thumb {
+  width: 64px;
+  height: 64px;
+  flex: 0 0 64px;
+  border: 2px solid var(--app-accent);
+  object-position: center;
+}
+
+.thumbEmpty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-style: dashed;
+  border-color: var(--app-line);
+  border-radius: 50%;
+  font-size: 10px;
+  color: var(--app-ink-soft);
+  text-align: center;
+}
+
+.color {
+  width: 100%;
+  height: 34px;
+  padding: 2px;
+  border: 1px solid var(--app-line);
+  border-radius: 8px;
+  background: #fff;
+  cursor: pointer;
+}
+
+.warning {
+  margin: 0;
+  font-size: 11px;
+  line-height: 1.45;
+  color: var(--app-warn-ink);
+  background: var(--app-warn-bg);
+  border: 1px solid var(--app-warn-line);
+  border-radius: 8px;
+  padding: 8px 10px;
+}

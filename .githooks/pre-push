@@ -1,0 +1,54 @@
+#!/usr/bin/env bash
+# Aviso antes de un `git push` hecho a mano (terminal, VS Code, GUI).
+# Hermano del hook de Claude Code en .claude/hooks/avisar-datos-personales.sh:
+# misma fuente de verdad (scripts/datos-personales.sh), distinta vía de entrada.
+#
+# Se activa con:  git config core.hooksPath .githooks
+set -uo pipefail
+
+root=$(git rev-parse --show-toplevel)
+hallazgos=$("$root/scripts/datos-personales.sh")
+
+# Repo limpio: sin aviso.
+[ -z "$hallazgos" ] && exit 0
+
+remoto="${2:-desconocido}"
+
+{
+  echo
+  echo "  ┌──────────────────────────────────────────────────────────┐"
+  echo "  │  ALTO: este repo contiene datos personales reales         │"
+  echo "  └──────────────────────────────────────────────────────────┘"
+  printf '%s\n' "$hallazgos" | sed 's/^/     • /'
+  echo
+  echo "  Destino: $remoto"
+  echo
+  echo "  Si el repositorio es PRIVADO, adelante."
+  echo "  Si es o va a ser PÚBLICO, cancela y arregla antes:"
+  echo "    · ponlo privado, o"
+  echo "    · cambia la semilla por datos ficticios y deja el CV real"
+  echo "      como JSON importable fuera de git."
+  echo
+} >&2
+
+# Git ocupa stdin con la lista de refs, así que hay que preguntar por /dev/tty.
+# Se intenta ABRIR de verdad: bajo CI o un agente el nodo puede existir y aun
+# así no ser abrible. Las llaves acotan el `2>/dev/null` al intento — sin ellas,
+# `exec` lo aplicaría a todo el script y se tragaría los mensajes de después.
+if ! { exec 3</dev/tty; } 2>/dev/null; then
+  echo "  Push abortado: no hay terminal para confirmar." >&2
+  echo "  Si es intencionado: git push --no-verify" >&2
+  exit 1
+fi
+
+respuesta=''
+read -r -p "  ¿Continuar con el push? [s/N] " respuesta <&3
+exec 3<&-
+
+case "$respuesta" in
+[sS] | [sS][iI]) exit 0 ;;
+*)
+  echo "  Push cancelado." >&2
+  exit 1
+  ;;
+esac

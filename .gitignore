@@ -1,0 +1,13 @@
+node_modules
+dist
+dist-ssr
+coverage
+*.local
+.DS_Store
+.vscode/*
+!.vscode/extensions.json
+
+# CVs reales exportados desde el panel: nunca al repo.
+# Llevan la foto incrustada en base64, así que son tan sensibles como el CV
+# en papel. Guárdalos fuera del repositorio (CLAUDE.md §15).
+*.cv.json

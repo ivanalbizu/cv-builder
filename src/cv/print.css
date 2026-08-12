@@ -1,0 +1,66 @@
+/* =========================================================================
+   IMPRESIÓN / PDF  — CLAUDE.md §2 y §12
+   La vista previa ES la salida: aquí solo se apaga el cromo de la app y se
+   deshacen los adornos de pantalla (sombra, zoom, márgenes del lienzo).
+   Guardar como PDF en Chrome: A4 · márgenes «Ninguno» · «Gráficos de fondo».
+   ========================================================================= */
+
+@page {
+  size: A4;
+  margin: 0;
+}
+
+@media print {
+  html,
+  body {
+    background: #fff;
+    margin: 0;
+    padding: 0;
+  }
+
+  /* Todo el cromo de la app fuera. */
+  .app-chrome,
+  .control-panel,
+  .toolbar,
+  .cv-page-guide {
+    display: none !important;
+  }
+
+  .app-shell,
+  .cv-viewport {
+    display: block !important;
+    overflow: visible !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    background: #fff !important;
+    height: auto !important;
+  }
+
+  /* El zoom es solo de pantalla. */
+  .cv-zoom,
+  .cv-zoom-box {
+    transform: none !important;
+    width: auto !important;
+    height: auto !important;
+  }
+
+  .cv-page-wrap {
+    position: static !important;
+  }
+
+  .cv-page {
+    /* `min-height: 0` es deliberado: con 297mm + padding, Chrome se pasa
+       unos milímetros y añade una página en blanco al final. */
+    width: auto !important;
+    min-height: 0 !important;
+    margin: 0 !important;
+    box-shadow: none !important;
+    overflow: visible !important;
+  }
+
+  /* Conservar fondos y colores en el PDF. */
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+}

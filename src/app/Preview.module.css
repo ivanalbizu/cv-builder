@@ -1,0 +1,61 @@
+.wrap {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  background: var(--app-canvas-bg);
+}
+
+.toolbar {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 16px;
+  background: var(--app-panel);
+  border-bottom: 1px solid var(--app-line);
+}
+
+.zoomGroup {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.zoomValue {
+  min-width: 46px;
+  text-align: center;
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+  color: var(--app-ink-soft);
+}
+
+.badge {
+  margin-right: auto;
+  font-size: 12px;
+  font-weight: 600;
+  border-radius: 999px;
+  padding: 4px 10px;
+}
+
+.badgeOk {
+  background: var(--app-ok-bg);
+  color: var(--app-ok-ink);
+}
+
+.badgeWarn {
+  background: var(--app-warn-bg);
+  color: var(--app-warn-ink);
+  border: 1px solid var(--app-warn-line);
+}
+
+.hint {
+  flex: 0 0 auto;
+  margin: 0;
+  padding: 8px 16px;
+  font-size: 12px;
+  color: var(--app-ink-soft);
+  background: var(--app-panel);
+  border-top: 1px solid var(--app-line);
+  text-align: center;
+}

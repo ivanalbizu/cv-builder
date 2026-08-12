@@ -1,0 +1,480 @@
+/* =========================================================================
+   PLANTILLA: UNA COLUMNA
+   Portada del CV de una página que inspiró el proyecto, ya validada a
+   1 página A4. Todo en mm y con tokens del tema: ni un color hardcodeado.
+
+   Regla de paginación aprendida a base de golpes (CLAUDE.md §2):
+   `break-inside: avoid` va en los ITEMS, nunca en la sección entera.
+   ========================================================================= */
+
+/* ---------------------------------------------------------------- cabecera */
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: 8mm;
+  padding: var(--header-pad);
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-soft) 100%);
+  color: #fff;
+  position: relative;
+}
+
+.header::after {
+  /* Filete de acento inferior. */
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 3.2mm;
+  background: linear-gradient(90deg, var(--accent) 0%, var(--accent-soft) 100%);
+}
+
+/* Auto-contraste: con un principal claro, el blanco no se lee. */
+:global(.cv-page[data-header='light']) .header {
+  color: #22303a;
+}
+:global(.cv-page[data-header='light']) .role {
+  color: var(--primary);
+}
+:global(.cv-page[data-header='light']) .contact a,
+:global(.cv-page[data-header='light']) .contact span {
+  color: #22303a;
+}
+:global(.cv-page[data-header='light']) .contact svg {
+  fill: var(--primary);
+}
+
+.photo {
+  width: 27mm;
+  height: 27mm;
+  flex: 0 0 27mm;
+  border: 1.1mm solid var(--accent);
+  /* `contain` muestra el retrato completo; `cover` llena el marco.
+     El fondo rellena en blanco el hueco de los PNG con transparencia. */
+  object-position: center;
+}
+
+.photoCircle {
+  border-radius: 50%;
+}
+
+.photoRect {
+  border-radius: 2mm;
+}
+
+.identity {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.name {
+  font-family: var(--display);
+  font-size: 23pt;
+  line-height: 1.05;
+  font-weight: 400;
+  letter-spacing: 0.2px;
+  margin: 0 0 2mm;
+}
+
+.role {
+  font-size: 9.4pt;
+  text-transform: uppercase;
+  letter-spacing: 2.6px;
+  color: var(--accent-soft);
+  margin: 0;
+}
+
+.contact {
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1.6mm;
+  font-size: 9.2pt;
+  text-align: right;
+}
+
+.contact a {
+  color: #fff;
+  text-decoration: none;
+}
+
+.contact span {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 2mm;
+  white-space: nowrap;
+}
+
+.contact svg {
+  width: 3.6mm;
+  height: 3.6mm;
+  fill: var(--accent-soft);
+  flex: 0 0 auto;
+}
+
+/* ------------------------------------------------------------------ cuerpo */
+
+.body {
+  padding: var(--body-pad);
+}
+
+.section {
+  margin-bottom: var(--section-gap);
+}
+
+.sectionTitle {
+  display: flex;
+  align-items: center;
+  gap: 2.6mm;
+  font-family: var(--sans);
+  font-size: 10pt;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1.8px;
+  color: var(--primary);
+  margin: 0 0 2.2mm;
+  padding-bottom: 1.4mm;
+  border-bottom: 0.6mm solid var(--accent-soft);
+  /* Un título nunca se queda solo al final de una página. */
+  break-after: avoid;
+  page-break-after: avoid;
+}
+
+.sectionTitle svg {
+  width: 4.4mm;
+  height: 4.4mm;
+  fill: var(--accent);
+  flex: 0 0 auto;
+}
+
+/* ----------------------------------------------------------------- perfil */
+
+.summary {
+  background: var(--surface);
+  border-left: 1mm solid var(--accent);
+  padding: 3mm 4mm;
+  margin: 0;
+  font-size: 9pt;
+  line-height: 1.32;
+  color: var(--ink);
+}
+
+/* ------------------------------------------------------ experiencia (timeline) */
+
+.timeline {
+  list-style: none;
+  /* 0.3mm: alinea el eje del timeline con el centro de la barra de acento
+     del perfil (1mm de ancho, mismo margen izquierdo). */
+  margin: 0 0 0 0.3mm;
+  padding: 0 0 0 6mm;
+  border-left: 0.4mm solid var(--rule);
+}
+
+.jobItem {
+  position: relative;
+  padding-bottom: var(--item-gap);
+  break-inside: avoid;
+  page-break-inside: avoid;
+}
+
+.jobItem:last-child {
+  padding-bottom: 0;
+}
+
+.jobItem::before {
+  /* Punto del timeline, centrado exactamente sobre la línea:
+     el borde del <ul> mide 0.4mm y empieza tras 6mm de padding. */
+  content: '';
+  position: absolute;
+  left: -6.2mm;
+  transform: translateX(-50%);
+  top: 1.6mm;
+  width: 2.6mm;
+  height: 2.6mm;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow:
+    0 0 0 1mm #fff,
+    0 0 0 1.4mm var(--accent-soft);
+}
+
+.jobHead {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 4mm;
+}
+
+.org {
+  font-family: var(--serif);
+  font-size: 11.6pt;
+  color: var(--primary);
+  margin: 0;
+  font-weight: 400;
+}
+
+.rating {
+  display: inline-flex;
+  gap: 0.4mm;
+  vertical-align: -0.5mm;
+}
+
+.rating svg {
+  width: 3.4mm;
+  height: 3.4mm;
+  fill: var(--accent);
+}
+
+.city {
+  color: var(--ink-soft);
+  font-size: 10pt;
+}
+
+.dates {
+  flex: 0 0 auto;
+  font-size: 8.8pt;
+  font-weight: 700;
+  letter-spacing: 0.6px;
+  color: var(--primary);
+  background: var(--surface);
+  border: 0.3mm solid var(--accent-soft);
+  border-radius: 999px;
+  padding: 0.8mm 3mm;
+  white-space: nowrap;
+}
+
+.datesCurrent {
+  background: var(--primary);
+  color: #fff;
+  border-color: var(--primary);
+}
+
+.jobRole {
+  font-size: 9.6pt;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+  color: var(--accent);
+  margin: 0.4mm 0 1.4mm;
+}
+
+/* Viñetas a la izquierda y etiquetas (software) a la derecha, en paralelo. */
+.jobBody {
+  display: flex;
+  align-items: flex-start;
+  gap: 7mm;
+}
+
+.bullets {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  flex: 1 1 auto;
+}
+
+.bullets li {
+  position: relative;
+  padding-left: 4mm;
+  margin-bottom: 0.9mm;
+  font-size: 9.6pt;
+  break-inside: avoid;
+}
+
+.bullets li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 1.7mm;
+  width: 1.5mm;
+  height: 1.5mm;
+  border-radius: 50%;
+  background: var(--accent-soft);
+}
+
+.jobTags {
+  flex: 0 0 auto;
+  max-width: 44%;
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-end;
+  text-align: right;
+  gap: 2mm;
+  margin: 0;
+  font-size: 8.8pt;
+  color: var(--ink-soft);
+}
+
+.jobTags svg {
+  width: 3.6mm;
+  height: 3.6mm;
+  fill: var(--accent);
+  flex: 0 0 auto;
+  margin-top: 0.4mm;
+}
+
+.jobTags strong {
+  color: var(--primary);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  font-size: 8pt;
+}
+
+/* --------------------------------------------------------- rejilla inferior */
+
+/* OJO (CLAUDE.md §2): un grid es «atómico» al paginar. Si Formación+Idiomas
+   no cabe entero, salta de página completo aunque quede hueco arriba. */
+.grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 7mm;
+  margin-bottom: var(--section-gap);
+}
+
+.grid > .section {
+  margin-bottom: 0;
+}
+
+/* -------------------------------------------------------------- formación */
+
+.eduItem {
+  margin-bottom: 2.4mm;
+  break-inside: avoid;
+  page-break-inside: avoid;
+}
+
+.eduItem:last-child {
+  margin-bottom: 0;
+}
+
+.eduItem h3 {
+  font-family: var(--serif);
+  font-size: 11pt;
+  font-weight: 400;
+  color: var(--primary);
+  margin: 0;
+}
+
+.eduItem p {
+  margin: 0.4mm 0 0;
+  font-size: 9.4pt;
+  color: var(--ink-soft);
+}
+
+.year {
+  font-size: 8.8pt;
+  font-weight: 700;
+  color: var(--accent);
+  letter-spacing: 0.6px;
+}
+
+/* ---------------------------------------------------------------- idiomas */
+
+.languages {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 2.2mm;
+}
+
+.language {
+  display: flex;
+  align-items: center;
+  gap: 3mm;
+  break-inside: avoid;
+  page-break-inside: avoid;
+}
+
+.flag {
+  flex: 0 0 auto;
+  width: 8.5mm;
+  height: 8.5mm;
+  border-radius: 50%;
+  background: var(--primary);
+  color: #fff;
+  font-size: 8.4pt;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.language h3 {
+  font-family: var(--serif);
+  font-size: 11pt;
+  font-weight: 400;
+  color: var(--primary);
+  margin: 0;
+}
+
+.language p {
+  margin: 0;
+  font-size: 9pt;
+  color: var(--ink-soft);
+}
+
+.level {
+  margin-left: auto;
+  font-size: 8.6pt;
+  font-weight: 700;
+  letter-spacing: 0.8px;
+  color: var(--accent);
+  border: 0.3mm solid var(--accent-soft);
+  border-radius: 999px;
+  padding: 0.6mm 2.4mm;
+  white-space: nowrap;
+}
+
+/* ------------------------------------------------------- competencias/chips */
+
+.chips {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.8mm;
+  margin: 0;
+  padding: 0;
+}
+
+.chips li {
+  font-size: 9pt;
+  background: var(--surface);
+  border: 0.3mm solid var(--rule);
+  border-radius: 999px;
+  padding: 0.9mm 3mm;
+  color: var(--primary);
+  break-inside: avoid;
+}
+
+.chips em {
+  font-style: normal;
+  color: var(--ink-soft);
+  font-size: 8.2pt;
+}
+
+/* ------------------------------------------------------------ texto libre */
+
+.customBody {
+  margin: 0;
+  font-size: 9.4pt;
+  white-space: pre-wrap;
+}
+
+/* ---------------------------------------------------------------- vacíos */
+
+/* Marca de agua para huecos sin rellenar: solo pantalla, jamás en el PDF. */
+.placeholder {
+  color: var(--ink-soft);
+  opacity: 0.45;
+  font-style: italic;
+}
+
+@media print {
+  .placeholder {
+    visibility: hidden;
+  }
+}
