@@ -40,6 +40,17 @@ Todo esto ya está probado en el CV de referencia y hay que reaprovecharlo.
   }
   ```
 - Al guardar como PDF desde Chrome: **A4, márgenes "Ninguno", activar "Gráficos de fondo".**
+  Se sigue recomendando marcar la casilla: es gratis y cubre navegadores o
+  versiones donde el CSS no baste.
+- Medido en la fase 3 leyendo las órdenes de relleno del PDF (Chrome 151, 5/5
+  ejecuciones): con `print-color-adjust: exact` los fondos **sí** se pintan
+  aunque se genere el PDF sin "gráficos de fondo". O sea, la regla CSS está
+  haciendo su trabajo. Aun así el generador de PDF pasa `printBackground: true`,
+  por no depender de ese detalle.
+- Para comprobar qué colores acaban de verdad en el papel, mirar las órdenes
+  `r g b rg` del flujo de contenido del PDF (`pdfFillColors` en
+  `e2e/pdf.spec.ts`). **Un screenshot no vale**: pinta los fondos siempre, así
+  que da verde aunque el PDF salga en blanco.
 - **PDF automatizado / servidor** (fidelidad idéntica, sin diálogo):
   ```bash
   google-chrome --headless --no-pdf-header-footer \
@@ -320,6 +331,10 @@ src/
 - Colores/tamaños vía **tokens/variables CSS**; nunca hardcodear en componentes.
 - Toda mutación del CV pasa por la **capa de comandos** (ni la UI ni el agente
   tocan el store directamente).
+- **Ramas:** el trabajo nuevo va en `feature/*` (p. ej.
+  `feature/fase-3-pdf-servidor`). Nunca se commitea directamente en `main`.
+- **Push y merge los hace Iván.** Claude deja el trabajo commiteado en su rama;
+  no ejecuta `git push`.
 
 ## 12. Checklist de impresión (definition of done por plantilla)
 - [ ] Cabe en el nº de páginas esperado (test automatizado).
@@ -340,8 +355,17 @@ avanzar; con pnpm el mismo install tarda segundos.
 # build:       pnpm build          (tsc --noEmit + vite build)
 # typecheck:   pnpm typecheck
 # lint:        pnpm lint
-# test:        pnpm test           (vitest)
-# e2e/pdf:     pendiente (fase 3, playwright)
+# test:        pnpm test           (vitest, unitarios)
+# e2e/pdf:     pnpm e2e            (playwright: PDF real, nº de páginas)
+# e2e con UI:  pnpm e2e:ui
+# PDF por CLI: pnpm pdf --out cv.pdf [--data x.cv.json] [--template …] [--theme …]
+```
+
+`pnpm e2e` hace `build` + `preview` por su cuenta y usa el **Chrome del
+sistema**. Sin Chrome instalado:
+```bash
+pnpm exec playwright install chromium
+PW_CHANNEL=chromium pnpm e2e
 ```
 
 PDF por línea de comandos, sin abrir el diálogo (el mismo motor que usa el
@@ -377,8 +401,35 @@ por tema sin tocar la UI y como base de la fase 3):
 ```
 Solo tocan TEMA y PLANTILLA; el contenido nunca se lee de la URL.
 
-**Pendiente:** fases 3–5 (pagedjs multipágina, PDF de servidor con Playwright y
-test de nº de páginas, WebMCP, pulido).
+- **Fase 3 (casi completa):** PDF de servidor con Playwright (`pnpm pdf`), suite
+  e2e que ejecuta el checklist de §12 sobre el PDF real — nº de páginas y tamaño
+  A4 para las **8 combinaciones** de plantilla × tema, texto no rasterizado,
+  cromo oculto y colores del tema efectivamente pintados. Detección de
+  desbordamiento ya estaba desde la fase 1.
+
+**Pendiente:** `pagedjs` (ver abajo), fase 4 (WebMCP) y fase 5 (pulido).
+
+### `pagedjs`: recomendación de NO integrarlo
+
+§4 lo proponía para previsualizar el flujo multipágina. Tras montar el resto de
+la fase 3, la recomendación es **descartarlo**, y conviene decidirlo antes de
+gastar esfuerzo:
+
+1. **Choca con el principio rector.** §4 fija que «la vista previa del lienzo
+   **es** la salida imprimible (misma fuente)». pagedjs reescribe el DOM con su
+   propio algoritmo de paginación, que no es el de Chrome: pasaríamos a tener
+   **dos** motores de maquetación y una vista previa que puede diferir del PDF.
+   Es justo el fallo que el diseño actual evita.
+2. **Pelea con React.** pagedjs toma el árbol y lo reconstruye en cajas de
+   página; con un panel que re-renderiza en cada tecla habría que aislarlo en un
+   modo aparte con debounce, y ya no sería «en vivo».
+3. **El beneficio real es pequeño.** Para un CV de 1–2 páginas, la vista actual
+   ya cuenta páginas midiendo el DOM y dibuja las guías de corte, y el e2e
+   verifica el recuento contra el PDF de verdad.
+
+Si en algún momento hace falta multipágina fiel (CVs académicos largos), la
+alternativa barata es renderizar el PDF con Playwright y mostrarlo incrustado,
+en vez de re-paginar en el navegador.
 
 ### Cómo añadir una plantilla
 

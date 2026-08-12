@@ -11,7 +11,10 @@
     "lint": "eslint .",
     "format": "prettier --write .",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "e2e": "playwright test",
+    "e2e:ui": "playwright test --ui",
+    "pdf": "node scripts/render-pdf.mjs"
   },
   "pnpm": {
     "onlyBuiltDependencies": [
@@ -31,6 +34,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.12.0",
+    "@playwright/test": "^1.62.1",
     "@testing-library/jest-dom": "^6.5.0",
     "@testing-library/react": "^16.0.1",
     "@testing-library/user-event": "^14.5.2",
@@ -43,6 +47,7 @@
     "eslint-plugin-react-refresh": "^0.4.12",
     "globals": "^15.10.0",
     "jsdom": "^25.0.1",
+    "pdf-lib": "^1.17.1",
     "prettier": "^3.3.3",
     "typescript": "^5.6.2",
     "typescript-eslint": "^8.8.0",
