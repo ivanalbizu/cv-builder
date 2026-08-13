@@ -1,6 +1,7 @@
 import { commands } from '../core/commands';
 import { useCVStore, useResolvedTheme } from '../core/store';
 import { THEMES } from '../core/themes';
+import { fontIdFromStack, fontsByRole, getFont } from '../core/fonts';
 import { TEMPLATES } from '../cv/templates';
 import type { Density } from '../core/types';
 import { ContrastReport } from './ContrastReport';
@@ -88,6 +89,55 @@ export function DesignForm() {
         ) : null}
 
         <ContrastReport theme={theme} />
+      </Panel>
+
+      <Panel title="Tipografía">
+        <Row>
+          <Field label="Títulos" hint={getFont(fontIdFromStack(theme.fonts.display, 'serif'), 'serif').hint}>
+            {(id) => (
+              <select
+                id={id}
+                className={s.select}
+                value={fontIdFromStack(theme.fonts.display, 'serif')}
+                onChange={(e) => {
+                  const f = getFont(e.target.value, 'serif');
+                  // Display y serif van juntos: en las plantillas, ambos son
+                  // «la fuente con carácter» y separarlos solo confunde.
+                  commands.setFont('display', f.stack);
+                  commands.setFont('serif', f.stack);
+                }}
+              >
+                {fontsByRole('serif').map((f) => (
+                  <option key={f.id} value={f.id}>
+                    {f.name}
+                  </option>
+                ))}
+              </select>
+            )}
+          </Field>
+
+          <Field label="Cuerpo" hint={getFont(fontIdFromStack(theme.fonts.sans, 'sans'), 'sans').hint}>
+            {(id) => (
+              <select
+                id={id}
+                className={s.select}
+                value={fontIdFromStack(theme.fonts.sans, 'sans')}
+                onChange={(e) => commands.setFont('sans', getFont(e.target.value, 'sans').stack)}
+              >
+                {fontsByRole('sans').map((f) => (
+                  <option key={f.id} value={f.id}>
+                    {f.name}
+                  </option>
+                ))}
+              </select>
+            )}
+          </Field>
+        </Row>
+
+        <p className={s.note}>
+          Cambiar la fuente del <strong>cuerpo</strong> mueve la maqueta: vigila el contador de
+          páginas. La de títulos es más segura, porque son líneas sueltas que no refluyen.
+        </p>
       </Panel>
 
       <Panel title="Densidad">

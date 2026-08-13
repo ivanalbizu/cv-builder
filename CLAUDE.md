@@ -96,14 +96,29 @@ Todo esto ya está probado en el CV de referencia y hay que reaprovecharlo.
   color de fondo, y toggle `cover/contain`.
 
 ### Tipografía y licencias
-- **Solo incrustar fuentes libres** (OFL/Apache: Google Fonts, o del sistema tipo
+- **Solo fuentes libres** (OFL/Apache: Google Fonts, o del sistema tipo
   Noto/Liberation). **Nunca privativas** (p. ej. Graphik de Meliá): ni licencia ni
   archivo. Usar **alternativa libre parecida** (Graphik → Inter/Manrope).
-- Cambiar de fuente **puede alterar la paginación**. Mitigación: aplicar la fuente
-  distintiva solo a **títulos** (líneas sueltas, no refluyen) y cuerpo en sans
-  compacta. Validar 1 página por tema.
-- Para preview se puede cargar Google Fonts por `<link>`; para el PDF final la
-  fuente debe estar **cargada/incrustada** (si es descargable/offline).
+- **Auto-hospedadas, no por `<link>` al CDN de Google.** Se descargan con
+  `pnpm fuentes` a `src/assets/fonts/` y el script genera `assets/fuentes.css`.
+  Tres motivos, por orden de peso para este proyecto:
+  1. El e2e de paginación mide el PDF real; con las fuentes viniendo de fuera,
+     el CI dependería de la red y una actualización de Google podría cambiar la
+     maqueta sin que nadie tocara el repo.
+  2. Privacidad: el CDN recibe la IP del visitante en cada carga (en la UE hay
+     sentencias al respecto).
+  3. `pnpm pdf` funciona sin red.
+- Se piden **variables** (`wght@400..700`): un archivo por familia y
+  subconjunto cubre todos los pesos y pesa menos que los estáticos sueltos.
+  Con `unicode-range`, `latin-ext` solo se descarga si el CV lo necesita.
+- Cambiar de fuente **puede alterar la paginación**. Mitigación: aplicar la
+  fuente distintiva solo a **títulos** (líneas sueltas, no refluyen) y cuerpo en
+  sans compacta. Medido: las 32 combinaciones de plantilla × cuerpo × títulos
+  siguen cabiendo en 1 página con la semilla (`e2e/tipografias.spec.ts`).
+- El fallo aquí es **silencioso**: si la fuente no carga, el stack acaba en una
+  genérica y el CV «se ve bien» sin que nadie note que la elección no surtió
+  efecto. Por eso el test comprueba la familia computada y que
+  `document.fonts` la dé por cargada, no que la página tenga buena pinta.
 
 ### Numeración de página
 - Chrome **sí** soporta cajas de margen de `@page` con `counter(page)` /
