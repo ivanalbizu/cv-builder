@@ -9,6 +9,7 @@ import {
   resolveTheme,
 } from './themes';
 import { contrastRatio, wcagLevel } from '../lib/contrast';
+import { FONTS } from './fonts';
 import type { Theme } from './types';
 
 /**
@@ -116,6 +117,44 @@ describe('auto-contraste de cabecera', () => {
       expect(wcagLevel(ratio, 'large'), `${primary} → ${ratio.toFixed(2)}:1`).not.toBe(
         'insuficiente',
       );
+    }
+  });
+});
+
+/**
+ * Determinismo tipográfico.
+ *
+ * Nace de una medición incómoda: con stacks del sistema, «Clásico» y
+ * «Boutique» salían tipográficamente IDÉNTICOS en Linux (ninguna de sus dos
+ * fuentes existe y caían al mismo respaldo), y «Lujo» cambió de aspecto solo
+ * cuando se auto-hospedó Playfair Display, que su stack ya listaba. Un tema
+ * que se ve distinto en cada máquina no es un tema.
+ */
+describe('tipografía de los temas', () => {
+  const INCRUSTADAS = FONTS.filter((f) => f.descarga).map(
+    (f) => f.stack.split(',')[0]!.replace(/["']/g, '').trim(),
+  );
+
+  it.each(THEMES.map((t) => [t.name, t] as const))(
+    '%s usa fuentes incrustadas, no del sistema',
+    (_nombre, theme) => {
+      for (const slot of ['display', 'serif', 'sans'] as const) {
+        const primera = theme.fonts[slot].split(',')[0]!.replace(/["']/g, '').trim();
+        expect(INCRUSTADAS, `${theme.id}.${slot} = «${primera}»`).toContain(primera);
+      }
+    },
+  );
+
+  it('los temas no se repiten entre sí: cada uno tiene su pareja', () => {
+    const parejas = THEMES.map((t) => `${t.fonts.display}|${t.fonts.sans}`);
+    expect(new Set(parejas).size, 'hay dos temas con la misma tipografía').toBe(parejas.length);
+  });
+
+  it('todo stack conserva un respaldo genérico por si la fuente no cargara', () => {
+    for (const theme of THEMES) {
+      for (const slot of ['display', 'serif', 'sans'] as const) {
+        expect(theme.fonts[slot], `${theme.id}.${slot}`).toMatch(/(sans-serif|serif)$/);
+      }
     }
   });
 });

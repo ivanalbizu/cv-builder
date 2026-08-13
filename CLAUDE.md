@@ -115,6 +115,12 @@ Todo esto ya está probado en el CV de referencia y hay que reaprovecharlo.
   fuente distintiva solo a **títulos** (líneas sueltas, no refluyen) y cuerpo en
   sans compacta. Medido: las 32 combinaciones de plantilla × cuerpo × títulos
   siguen cabiendo en 1 página con la semilla (`e2e/tipografias.spec.ts`).
+- **Los temas declaran fuentes incrustadas, nunca del sistema.** Medido: con
+  stacks del sistema, «Clásico» y «Boutique» salían tipográficamente IDÉNTICOS
+  en Linux —ni Palatino Linotype ni Georgia existen y caían al mismo respaldo—
+  y «Lujo» cambió de aspecto solo, sin tocar el tema, en cuanto se auto-hospedó
+  Playfair Display, que su stack ya listaba. Un tema que se ve distinto en cada
+  máquina no es un tema. Hay un test que lo impide (`themes.contrast.test.ts`).
 - El fallo aquí es **silencioso**: si la fuente no carga, el stack acaba en una
   genérica y el CV «se ve bien» sin que nadie note que la elección no surtió
   efecto. Por eso el test comprueba la familia computada y que
@@ -504,9 +510,12 @@ Solo tocan TEMA y PLANTILLA; el contenido nunca se lee de la URL.
     color) y selector con vista previa REAL — cada miniatura es la plantilla
     de verdad con el CV y el tema del usuario, encogida con `transform`. Solo
     es posible porque las plantillas son puras (§11).
+  - *Temas*: de 4 a **8** (Botánico, Tinta, Índigo y Granate), cada uno con su
+    pareja tipográfica incrustada. `setTheme` descarta también las fuentes
+    elegidas a mano, por el mismo motivo que ya descartaba los colores.
   - Numeración de página cuando el CV pasa de una hoja (§2).
 
-**Pendiente de fase 5:** más temas, compartir/exportar, i18n.
+**Pendiente de fase 5:** compartir/exportar, i18n.
 
 **Números de la suite en este punto:** 254 tests unitarios y 44 e2e.
 
