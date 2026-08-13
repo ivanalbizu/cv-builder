@@ -1,0 +1,89 @@
+{
+  "generado": "2026-08-13",
+  "archivos": [
+    {
+      "familia": "Inter",
+      "papel": "sans",
+      "pesos": "400 700",
+      "archivo": "inter-latin-ext.woff2",
+      "kb": 83
+    },
+    {
+      "familia": "Inter",
+      "papel": "sans",
+      "pesos": "400 700",
+      "archivo": "inter-latin.woff2",
+      "kb": 47
+    },
+    {
+      "familia": "Source Sans 3",
+      "papel": "sans",
+      "pesos": "400 700",
+      "archivo": "source-sans-3-latin-ext.woff2",
+      "kb": 59
+    },
+    {
+      "familia": "Source Sans 3",
+      "papel": "sans",
+      "pesos": "400 700",
+      "archivo": "source-sans-3-latin.woff2",
+      "kb": 28
+    },
+    {
+      "familia": "Manrope",
+      "papel": "sans",
+      "pesos": "400 700",
+      "archivo": "manrope-latin-ext.woff2",
+      "kb": 15
+    },
+    {
+      "familia": "Manrope",
+      "papel": "sans",
+      "pesos": "400 700",
+      "archivo": "manrope-latin.woff2",
+      "kb": 24
+    },
+    {
+      "familia": "Lora",
+      "papel": "serif",
+      "pesos": "400 700",
+      "archivo": "lora-latin-ext.woff2",
+      "kb": 20
+    },
+    {
+      "familia": "Lora",
+      "papel": "serif",
+      "pesos": "400 700",
+      "archivo": "lora-latin.woff2",
+      "kb": 37
+    },
+    {
+      "familia": "Playfair Display",
+      "papel": "serif",
+      "pesos": "400 700",
+      "archivo": "playfair-display-latin-ext.woff2",
+      "kb": 21
+    },
+    {
+      "familia": "Playfair Display",
+      "papel": "serif",
+      "pesos": "400 700",
+      "archivo": "playfair-display-latin.woff2",
+      "kb": 38
+    },
+    {
+      "familia": "EB Garamond",
+      "papel": "serif",
+      "pesos": "400 700",
+      "archivo": "eb-garamond-latin-ext.woff2",
+      "kb": 111
+    },
+    {
+      "familia": "EB Garamond",
+      "papel": "serif",
+      "pesos": "400 700",
+      "archivo": "eb-garamond-latin.woff2",
+      "kb": 43
+    }
+  ]
+}

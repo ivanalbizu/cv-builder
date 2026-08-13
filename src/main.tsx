@@ -4,6 +4,8 @@ import { App } from './app/App';
 import { installGlobalApi } from './agent/globalApi';
 import { installWebMCP } from './agent/webmcp';
 import { applyUrlParams } from './app/urlParams';
+// Fuentes libres auto-hospedadas (OFL). Generado por scripts/descargar-fuentes.mjs.
+import './assets/fuentes.css';
 import './app/app.css';
 // El CSS de impresión es global y va el último: sus `!important` deben ganar.
 import './cv/print.css';
