@@ -116,6 +116,22 @@ export function TextAreaField({
   );
 }
 
+/**
+ * Grupo de controles dentro de un bloque.
+ *
+ * `fieldset`/`legend` y no un `div` con un `<h3>`: es la etiqueta semántica
+ * para agrupar controles de formulario, y hace que un lector de pantalla
+ * anuncie «Colores» al entrar en cada campo del grupo.
+ */
+export function Grupo({ titulo, children }: { titulo: string; children: ReactNode }) {
+  return (
+    <fieldset className={s.grupo}>
+      <legend className={s.leyenda}>{titulo}</legend>
+      {children}
+    </fieldset>
+  );
+}
+
 export function Row({ children }: { children: ReactNode }) {
   return <div className={s.row}>{children}</div>;
 }

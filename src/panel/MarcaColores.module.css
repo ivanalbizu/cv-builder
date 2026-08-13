@@ -1,0 +1,49 @@
+.acciones {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.pista {
+  font-size: 11px;
+  color: var(--app-ink-soft);
+}
+
+/* La pregunta se muestra siempre: si el portapapeles falla —o el navegador no
+   lo permite sin gesto—, todavía se puede seleccionar a mano. */
+.pregunta {
+  margin: 0;
+  padding: 8px 10px;
+  max-height: 132px;
+  overflow: auto;
+  background: #f6f7f9;
+  border: 1px solid var(--app-line);
+  border-radius: 8px;
+  font: 11px/1.5 var(--app-mono);
+  color: var(--app-ink-soft);
+  white-space: pre-wrap;
+  user-select: all;
+}
+
+.error {
+  margin: 0;
+  font-size: 11px;
+  color: #a11d13;
+  background: #fdeceb;
+  border: 1px solid #f3bdb8;
+  border-radius: 8px;
+  padding: 8px 10px;
+}
+
+.aviso {
+  margin: 0;
+  font-size: 11px;
+  line-height: 1.45;
+  color: var(--app-ink-soft);
+}
+
+.pregunta:focus-visible {
+  outline: 2px solid var(--app-brand);
+  outline-offset: 1px;
+}
