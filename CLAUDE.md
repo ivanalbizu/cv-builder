@@ -480,13 +480,28 @@ por tema sin tocar la UI y como base de la fase 3):
 ```
 Solo tocan TEMA y PLANTILLA; el contenido nunca se lee de la URL.
 
-- **Fase 3 (casi completa):** PDF de servidor con Playwright (`pnpm pdf`), suite
-  e2e que ejecuta el checklist de §12 sobre el PDF real — nº de páginas y tamaño
-  A4 para las **8 combinaciones** de plantilla × tema, texto no rasterizado,
-  cromo oculto y colores del tema efectivamente pintados. Detección de
-  desbordamiento ya estaba desde la fase 1.
+- **Fase 3 completa:** PDF de servidor con Playwright (`pnpm pdf`), suite e2e
+  que ejecuta el checklist de §12 sobre el PDF real — nº de páginas y tamaño A4
+  para las **8 combinaciones** de plantilla × tema, texto no rasterizado, cromo
+  oculto y colores del tema efectivamente pintados. Detección de desbordamiento
+  ya estaba desde la fase 1. `pagedjs` evaluado y descartado (ver abajo), así
+  que no falta nada.
+- **Fase 4 completa:** catálogo de herramientas sobre la capa de comandos
+  (`src/agent/tools.ts`) y adaptador WebMCP (`src/agent/webmcp.ts`), este último
+  verificado contra la API real de Chrome 151. Detalle en §8.
+- **Fase 5 en curso.** Hecho:
+  - *Contraste*: tokens de texto derivados que garantizan WCAG AA con cualquier
+    color de marca (§2), con 130 tests sobre pares reales de las plantillas.
+  - *Accesibilidad*: auditoría axe dentro del e2e, sin violaciones en WCAG 2.1
+    A/AA ni en buenas prácticas; enlace de salto, landmarks y aviso de páginas
+    como región viva.
+  - *Tipografía*: seis familias OFL auto-hospedadas y selector en el panel (§7).
+  - Numeración de página cuando el CV pasa de una hoja (§2).
 
-**Pendiente:** fase 4 (WebMCP) y fase 5 (pulido).
+**Pendiente de fase 5:** galería de plantillas y más temas, compartir/exportar,
+i18n.
+
+**Números de la suite en este punto:** 254 tests unitarios y 44 e2e.
 
 ### DECISIÓN TOMADA (Iván): `pagedjs` descartado
 
