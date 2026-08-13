@@ -291,7 +291,9 @@ Exponer también en `window.cvBuilder` (fallback sin MCP) para automatizar/teste
 - **Tema:** pickers de color (principal/acento) con **sincronización** al tema
   activo y **contraste automático** de cabecera; densidad comfy/compact.
 - **Tipografía:** elegir familia para display/cuerpo. (Ver §7.)
-- **Exportar/Guardar:** PDF, exportar/importar JSON, autosave localStorage.
+- **Exportar/Guardar:** PDF por impresión, **HTML autónomo** (para enviar o
+  publicar), exportar/importar JSON (para volver a editarlo), autosave en
+  localStorage.
 
 ---
 
@@ -513,9 +515,13 @@ Solo tocan TEMA y PLANTILLA; el contenido nunca se lee de la URL.
   - *Temas*: de 4 a **8** (Botánico, Tinta, Índigo y Granate), cada uno con su
     pareja tipográfica incrustada. `setTheme` descarta también las fuentes
     elegidas a mano, por el mismo motivo que ya descartaba los colores.
+  - *Compartir*: **exportar a HTML autónomo** (`src/lib/exportarHtml.ts`). Un
+    solo archivo con estilos, tipografías y foto incrustados; se abre sin red y
+    al imprimirlo da el MISMO PDF que la app — comparado PDF contra PDF en el
+    e2e, no a ojo. Es el formato del que nació el proyecto.
   - Numeración de página cuando el CV pasa de una hoja (§2).
 
-**Pendiente de fase 5:** compartir/exportar, i18n.
+**Pendiente de fase 5:** i18n.
 
 **Números de la suite en este punto:** 254 tests unitarios y 44 e2e.
 
