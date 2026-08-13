@@ -2,6 +2,7 @@ import type { ComponentType } from 'react';
 import type { TemplateMeta, TemplateProps } from '../../core/types';
 import { SingleColumn } from './SingleColumn';
 import { Sidebar } from './Sidebar';
+import { Minimal } from './Minimal';
 
 /**
  * Registro de plantillas. Añadir una plantilla = añadir una entrada aquí;
@@ -25,6 +26,13 @@ export const TEMPLATES: TemplateEntry[] = [
     layout: 'sidebar',
     description: 'Columna estrecha con foto, contacto e idiomas; experiencia a la derecha.',
     Component: Sidebar,
+  },
+  {
+    id: 'minimal',
+    name: 'Minimalista',
+    layout: 'single',
+    description: 'Solo tipografía y filetes. Para sectores sobrios o impresión en blanco y negro.',
+    Component: Minimal,
   },
 ];
 

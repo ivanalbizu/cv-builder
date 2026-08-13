@@ -11,7 +11,7 @@ import { PDFDocument } from 'pdf-lib';
  * fondos y con el texto seleccionable.
  */
 
-const TEMPLATES = ['single-column', 'sidebar'] as const;
+const TEMPLATES = ['single-column', 'sidebar', 'minimal'] as const;
 const THEMES = ['clasico', 'boutique', 'corporativo', 'lujo'] as const;
 
 /** Los mismos ajustes que el diálogo de Chrome con «márgenes: Ninguno». */

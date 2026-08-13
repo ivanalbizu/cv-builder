@@ -2,9 +2,9 @@ import { commands } from '../core/commands';
 import { useCVStore, useResolvedTheme } from '../core/store';
 import { THEMES } from '../core/themes';
 import { fontIdFromStack, fontsByRole, getFont } from '../core/fonts';
-import { TEMPLATES } from '../cv/templates';
 import type { Density } from '../core/types';
 import { ContrastReport } from './ContrastReport';
+import { TemplateGallery } from './TemplateGallery';
 import { Actions, Field, Panel, Row } from './ui';
 import s from './DesignForm.module.css';
 
@@ -14,7 +14,6 @@ const DENSITIES: { value: Density; label: string; hint: string }[] = [
 ];
 
 export function DesignForm() {
-  const templateId = useCVStore((st) => st.doc.templateId);
   const themeId = useCVStore((st) => st.doc.themeId);
   const overrides = useCVStore((st) => st.doc.overrides);
   // Colores efectivos: si el usuario no ha tocado nada, muestran los del tema.
@@ -23,20 +22,7 @@ export function DesignForm() {
   return (
     <>
       <Panel title="Plantilla">
-        <div className={s.templateGrid}>
-          {TEMPLATES.map((template) => (
-            <button
-              key={template.id}
-              className={`${s.templateCard} ${template.id === templateId ? s.active : ''}`}
-              onClick={() => commands.setTemplate(template.id)}
-              aria-pressed={template.id === templateId}
-            >
-              <span className={`${s.thumb} ${s[template.layout] ?? ''}`} aria-hidden="true" />
-              <strong>{template.name}</strong>
-              <span className={s.templateDesc}>{template.description}</span>
-            </button>
-          ))}
-        </div>
+        <TemplateGallery />
       </Panel>
 
       <Panel title="Tema">

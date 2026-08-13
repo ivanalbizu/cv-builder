@@ -410,6 +410,10 @@ src/
   `feature/fase-3-pdf-servidor`). Nunca se commitea directamente en `main`.
 - **Push y merge los hace Iván.** Claude deja el trabajo commiteado en su rama;
   no ejecuta `git push`.
+- **Una tarea, una rama, y se fusiona antes de empezar la siguiente.** Nada de
+  encadenar ramas sin pasar por `main`. Encadenarlas ya pasó factura: la rama de
+  tipografías salía de la de contraste, así que contenía sus commits y su PR
+  mostraba tres cambios mezclados. Cada rama debe salir de un `main` al día.
 
 ## 12. Checklist de impresión (definition of done por plantilla)
 - [ ] Cabe en el nº de páginas esperado (test automatizado).
@@ -496,10 +500,13 @@ Solo tocan TEMA y PLANTILLA; el contenido nunca se lee de la URL.
     A/AA ni en buenas prácticas; enlace de salto, landmarks y aviso de páginas
     como región viva.
   - *Tipografía*: seis familias OFL auto-hospedadas y selector en el panel (§7).
+  - *Galería de plantillas*: tercera plantilla («Minimalista», sin bloques de
+    color) y selector con vista previa REAL — cada miniatura es la plantilla
+    de verdad con el CV y el tema del usuario, encogida con `transform`. Solo
+    es posible porque las plantillas son puras (§11).
   - Numeración de página cuando el CV pasa de una hoja (§2).
 
-**Pendiente de fase 5:** galería de plantillas y más temas, compartir/exportar,
-i18n.
+**Pendiente de fase 5:** más temas, compartir/exportar, i18n.
 
 **Números de la suite en este punto:** 254 tests unitarios y 44 e2e.
 
@@ -530,8 +537,10 @@ gratis:** `scripts/render-pdf.mjs` produce el PDF y solo faltaría enseñarlo.
 1. `src/cv/templates/MiPlantilla.tsx` + `.module.css`, componente **puro**
    respecto a (`data`, `theme`).
 2. Registrarla en `src/cv/templates/index.tsx`.
-3. Añadirla al array `TEMPLATES` de `src/cv/print.test.ts`: el checklist de
-   impresión de §12 se aplica a todas, no solo a la primera.
+3. Añadirla al array `TEMPLATES` de `src/cv/print.test.ts` y al de
+   `e2e/pdf.spec.ts`: el checklist de §12 se aplica a todas, no solo a la
+   primera. Si se olvida el primero, el test «toda plantilla registrada pasa
+   por el checklist» falla y lo dice por su nombre.
 4. Reutilizar `templates/shared.ts` para fechas e iconos de contacto, para que
    las plantillas no diverjan en cómo presentan lo mismo.
 
