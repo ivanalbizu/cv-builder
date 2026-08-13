@@ -33,6 +33,11 @@ const TEMPLATES = [
     css: read('./templates/Sidebar.module.css'),
     items: ['.jobItem', '.eduItem', '.language'],
   },
+  {
+    name: 'Minimal',
+    css: read('./templates/Minimal.module.css'),
+    items: ['.jobItem', '.eduItem'],
+  },
 ];
 
 /** Extrae el cuerpo del bloque `@media print { ... }`. */
@@ -100,6 +105,26 @@ describe('canvas.css', () => {
   it('la hoja mide exactamente A4', () => {
     expect(canvasCss).toMatch(/\.cv-page\s*\{[^}]*width:\s*210mm/);
     expect(canvasCss).toMatch(/\.cv-page\s*\{[^}]*min-height:\s*297mm/);
+  });
+});
+
+/**
+ * Guardián del paso manual que documenta CLAUDE.md: registrar una plantilla y
+ * olvidarse de añadirla arriba la dejaría fuera del checklist de impresión sin
+ * que nada avisara — justo el fallo que este archivo existe para evitar.
+ */
+describe('cobertura del checklist', () => {
+  it('toda plantilla registrada pasa por el checklist', async () => {
+    const { TEMPLATES: REGISTRADAS } = await import('./templates');
+    const cubiertas = TEMPLATES.map((t) => t.name.toLowerCase());
+
+    for (const entrada of REGISTRADAS) {
+      const esperada = entrada.id.replace(/-([a-z])/g, (_, c: string) => c.toUpperCase());
+      expect(
+        cubiertas.some((c) => c === esperada.toLowerCase()),
+        `«${entrada.id}» no está en el array TEMPLATES de este test`,
+      ).toBe(true);
+    }
   });
 });
 
