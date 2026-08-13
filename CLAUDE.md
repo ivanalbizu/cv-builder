@@ -400,6 +400,8 @@ src/
 - [ ] Cabe en el nº de páginas esperado (test automatizado).
 - [ ] Todo par texto/fondo cumple **WCAG AA** (`themes.contrast.test.ts`), con
       los temas curados y con colores de marca arbitrarios.
+- [ ] Sin violaciones de axe en la app (`e2e/accesibilidad.spec.ts`, reglas
+      WCAG 2.1 A/AA y buenas prácticas).
 - [ ] Fondos/colores salen en el PDF (`print-color-adjust: exact`).
 - [ ] UI oculta en `@media print`.
 - [ ] Sin página en blanco final.

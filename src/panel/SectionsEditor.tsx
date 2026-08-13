@@ -11,7 +11,7 @@ import type {
 } from '../core/types';
 import { ICON_NAMES } from '../cv/icons';
 import { DragHandle, SortableItem, SortableList } from './Sortable';
-import { Actions, ItemCard, Panel, Row, TextAreaField, TextField } from './ui';
+import { Actions, Field, ItemCard, Panel, Row, TextAreaField, TextField } from './ui';
 import s from './SectionsEditor.module.css';
 
 const NEW_SECTIONS: { type: SectionType; label: string }[] = [
@@ -46,12 +46,11 @@ export function SectionsEditor() {
         ids={sections.map((section) => section.id)}
         onReorder={(id, to) => commands.reorderSection(id, to)}
       >
-        {sections.map((section, index) => (
+        {sections.map((section) => (
           <SortableItem key={section.id} id={section.id}>
             {({ handleProps }) => (
               <SectionPanel
                 section={section}
-                index={index}
                 handle={<DragHandle label={`sección ${section.title}`} {...handleProps} />}
               />
             )}
@@ -59,7 +58,7 @@ export function SectionsEditor() {
         ))}
       </SortableList>
 
-      <Panel title="Añadir sección" defaultOpen>
+      <Panel title="Añadir sección">
         <Actions>
           {NEW_SECTIONS.map((entry) => (
             <button
@@ -76,19 +75,11 @@ export function SectionsEditor() {
   );
 }
 
-function SectionPanel({
-  section,
-  index,
-  handle,
-}: {
-  section: Section;
-  index: number;
-  handle: React.ReactNode;
-}) {
+function SectionPanel({ section, handle }: { section: Section; handle: React.ReactNode }) {
   const count = section.type === 'custom' ? undefined : section.items.length;
 
   return (
-    <Panel title={section.title || 'Sección'} badge={count} defaultOpen={index === 0}>
+    <Panel title={section.title || 'Sección'} badge={count}>
       <div className={s.sectionTools}>
         {handle}
         <span className={s.sectionHint}>Arrastra para reordenar</span>
@@ -106,22 +97,24 @@ function SectionPanel({
           value={section.title}
           onChange={(v) => commands.updateSection(section.id, { title: v })}
         />
-        <div className={s.iconField}>
-          <span className={s.iconLabel}>Icono</span>
-          <select
-            className={s.select}
-            value={section.icon}
-            onChange={(e) =>
-              commands.updateSection(section.id, { icon: e.target.value as Section['icon'] })
-            }
-          >
-            {ICON_NAMES.map((name) => (
-              <option key={name} value={name}>
-                {name}
-              </option>
-            ))}
-          </select>
-        </div>
+        <Field label="Icono">
+          {(id) => (
+            <select
+              id={id}
+              className={s.select}
+              value={section.icon}
+              onChange={(e) =>
+                commands.updateSection(section.id, { icon: e.target.value as Section['icon'] })
+              }
+            >
+              {ICON_NAMES.map((name) => (
+                <option key={name} value={name}>
+                  {name}
+                </option>
+              ))}
+            </select>
+          )}
+        </Field>
       </Row>
 
       {section.type === 'custom' ? (
@@ -244,31 +237,35 @@ function ExperienceFields({ sectionId, item }: { sectionId: Id; item: Experience
       />
 
       <Row>
-        <div className={s.iconField}>
-          <span className={s.iconLabel}>Categoría</span>
-          <select
-            className={s.select}
-            value={item.rating ?? 0}
-            onChange={(e) => patch({ rating: Number(e.target.value) })}
-          >
-            {[0, 1, 2, 3, 4, 5].map((n) => (
-              <option key={n} value={n}>
-                {n === 0 ? 'Ninguna' : n}
-              </option>
-            ))}
-          </select>
-        </div>
-        <div className={s.iconField}>
-          <span className={s.iconLabel}>Símbolo</span>
-          <select
-            className={s.select}
-            value={item.ratingIcon ?? 'star'}
-            onChange={(e) => patch({ ratingIcon: e.target.value as 'star' | 'key' })}
-          >
-            <option value="star">Estrellas</option>
-            <option value="key">Llaves</option>
-          </select>
-        </div>
+        <Field label="Categoría">
+          {(id) => (
+            <select
+              id={id}
+              className={s.select}
+              value={item.rating ?? 0}
+              onChange={(e) => patch({ rating: Number(e.target.value) })}
+            >
+              {[0, 1, 2, 3, 4, 5].map((n) => (
+                <option key={n} value={n}>
+                  {n === 0 ? 'Ninguna' : n}
+                </option>
+              ))}
+            </select>
+          )}
+        </Field>
+        <Field label="Símbolo">
+          {(id) => (
+            <select
+              id={id}
+              className={s.select}
+              value={item.ratingIcon ?? 'star'}
+              onChange={(e) => patch({ ratingIcon: e.target.value as 'star' | 'key' })}
+            >
+              <option value="star">Estrellas</option>
+              <option value="key">Llaves</option>
+            </select>
+          )}
+        </Field>
       </Row>
     </>
   );

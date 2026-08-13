@@ -21,7 +21,7 @@ export function DesignForm() {
 
   return (
     <>
-      <Panel title="Plantilla" defaultOpen>
+      <Panel title="Plantilla">
         <div className={s.templateGrid}>
           {TEMPLATES.map((template) => (
             <button
@@ -38,7 +38,7 @@ export function DesignForm() {
         </div>
       </Panel>
 
-      <Panel title="Tema" defaultOpen>
+      <Panel title="Tema">
         <Actions>
           {THEMES.map((t) => (
             <button
