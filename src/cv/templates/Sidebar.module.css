@@ -17,33 +17,14 @@
 
 .aside {
   background: linear-gradient(160deg, var(--primary) 0%, var(--primary-soft) 100%);
-  color: #fff;
+  /* Tinta derivada del fondo, igual que en la otra plantilla. */
+  color: var(--header-ink);
   padding: 9mm 7mm;
   /* El fondo debe llegar hasta el borde de la hoja aunque el contenido sea
      corto; en print, la columna se estira con la página. */
   display: flex;
   flex-direction: column;
   gap: 6mm;
-}
-
-/* Auto-contraste: con un principal claro, el blanco no se lee. */
-:global(.cv-page[data-header='light']) .aside {
-  color: #22303a;
-}
-:global(.cv-page[data-header='light']) .asideTitle {
-  color: var(--primary);
-  border-bottom-color: var(--primary);
-}
-:global(.cv-page[data-header='light']) .contact a,
-:global(.cv-page[data-header='light']) .contact span {
-  color: #22303a;
-}
-:global(.cv-page[data-header='light']) .contact svg {
-  fill: var(--primary);
-}
-:global(.cv-page[data-header='light']) .level {
-  color: var(--primary);
-  border-color: var(--primary);
 }
 
 .photoWrap {
@@ -82,7 +63,7 @@
   font-size: 8.6pt;
   text-transform: uppercase;
   letter-spacing: 2px;
-  color: var(--accent-soft);
+  color: var(--header-accent);
   margin: 0;
 }
 
@@ -104,7 +85,7 @@
 .asideTitle svg {
   width: 3.8mm;
   height: 3.8mm;
-  fill: var(--accent);
+  fill: var(--header-accent);
   flex: 0 0 auto;
 }
 
@@ -131,7 +112,7 @@
 .contact svg {
   width: 3.4mm;
   height: 3.4mm;
-  fill: var(--accent-soft);
+  fill: var(--header-accent);
   flex: 0 0 auto;
   margin-top: 0.5mm;
 }
@@ -170,8 +151,8 @@
   font-size: 8pt;
   font-weight: 700;
   letter-spacing: 0.6px;
-  color: var(--accent-soft);
-  border: 0.3mm solid var(--accent-soft);
+  color: var(--header-accent);
+  border: 0.3mm solid var(--header-accent);
   border-radius: 999px;
   padding: 0.4mm 2mm;
   white-space: nowrap;
@@ -220,7 +201,7 @@
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 1.6px;
-  color: var(--primary);
+  color: var(--primary-text);
   margin: 0 0 2.4mm;
   padding-bottom: 1.2mm;
   border-bottom: 0.5mm solid var(--accent-soft);
@@ -272,7 +253,7 @@
 .org {
   font-family: var(--serif);
   font-size: 11.4pt;
-  color: var(--primary);
+  color: var(--primary-text);
   margin: 0;
   font-weight: 400;
 }
@@ -304,7 +285,7 @@
 }
 
 .datesCurrent {
-  color: var(--accent);
+  color: var(--accent-text);
 }
 
 .jobRole {
@@ -312,7 +293,7 @@
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 1px;
-  color: var(--accent);
+  color: var(--accent-text);
   margin: 0.4mm 0 1.4mm;
 }
 
@@ -359,7 +340,7 @@
 }
 
 .jobTags strong {
-  color: var(--primary);
+  color: var(--primary-text);
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.5px;
@@ -382,7 +363,7 @@
   font-family: var(--serif);
   font-size: 10.6pt;
   font-weight: 400;
-  color: var(--primary);
+  color: var(--primary-text);
   margin: 0;
 }
 
@@ -395,7 +376,7 @@
 .year {
   font-size: 8.6pt;
   font-weight: 700;
-  color: var(--accent);
+  color: var(--accent-text);
   letter-spacing: 0.5px;
 }
 

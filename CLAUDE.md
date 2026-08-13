@@ -73,8 +73,18 @@ Todo esto ya está probado en el CV de referencia y hay que reaprovecharlo.
   `--surface`, `--ink`, `--serif`, `--sans`, …). Cambiar de tema = redefinir esas
   variables. Temas por `:root[data-theme="..."]`. Acento de marca por override
   inline (gana sobre el tema).
-- **Contraste automático de cabecera:** si el color principal es claro (brillo
-  `(r*299+g*587+b*114)/1000 > 150`), el texto de cabecera pasa a oscuro. Reutilizar.
+- **Contraste automático de cabecera:** el CV de referencia decidía con un
+  umbral de brillo YIQ (>150). Sustituido en la fase 5 por contraste WCAG real:
+  se comparan los ratios y gana la tinta que más contrasta. Un umbral tiene un
+  punto ciego justo en su raya, donde un color se lleva la peor de las dos.
+- **Un color de tema hace dos trabajos distintos** —pintar superficies y
+  escribir texto— y el mismo tono puede valer para uno y ser ilegible para el
+  otro. Por eso hay tokens derivados **solo para texto**:
+  `--primary-text`, `--accent-text`, `--header-ink` y `--header-accent`. Los
+  adornos (filetes, puntos, iconos, fondos) siguen usando el color elegido tal
+  cual, así el diseño no cambia.
+  **Al escribir una plantilla:** `color:` va con el token `-text`; `background`,
+  `border` y `fill` decorativos, con el token base.
 
 ### Imágenes (lección importante)
 - **Incrustar en base64** para portabilidad (el archivo/artefacto es autónomo).
@@ -388,6 +398,10 @@ src/
 
 ## 12. Checklist de impresión (definition of done por plantilla)
 - [ ] Cabe en el nº de páginas esperado (test automatizado).
+- [ ] Todo par texto/fondo cumple **WCAG AA** (`themes.contrast.test.ts`), con
+      los temas curados y con colores de marca arbitrarios.
+- [ ] Sin violaciones de axe en la app (`e2e/accesibilidad.spec.ts`, reglas
+      WCAG 2.1 A/AA y buenas prácticas).
 - [ ] Fondos/colores salen en el PDF (`print-color-adjust: exact`).
 - [ ] UI oculta en `@media print`.
 - [ ] Sin página en blanco final.

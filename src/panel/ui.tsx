@@ -1,20 +1,29 @@
 import { useId, type ReactNode } from 'react';
 import s from './ui.module.css';
 
-/** Bloque plegable del panel. Abierto por defecto los que más se tocan. */
+/**
+ * Bloque plegable del panel.
+ *
+ * Todos arrancan cerrados. Con varios abiertos, el panel llega lleno de
+ * campos y no se ve de un vistazo qué secciones tiene el CV; cerrados, la
+ * primera pantalla es el índice del documento.
+ *
+ * `open` no se controla desde React a propósito: `<details>` mantiene su
+ * estado en el DOM y React no lo reaplica en cada render (comprobado: teclear
+ * en un campo no cierra el bloque). Añadir estado aquí solo traería renders
+ * extra a cambio de nada.
+ */
 export function Panel({
   title,
   children,
-  defaultOpen = false,
   badge,
 }: {
   title: string;
   children: ReactNode;
-  defaultOpen?: boolean;
   badge?: ReactNode;
 }) {
   return (
-    <details className={s.panel} open={defaultOpen}>
+    <details className={s.panel}>
       <summary className={s.summary}>
         <span>{title}</span>
         {badge ? <span className={s.badge}>{badge}</span> : null}

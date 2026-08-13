@@ -55,6 +55,11 @@ export const useCVStore = create<CVStore>()(
 
 export const selectDoc = (s: CVStore): CVDocument => s.doc;
 
+/** Tema resuelto fuera de React (herramientas del agente, scripts). */
+export function selectResolvedThemeFor(s: CVStore): Theme {
+  return resolveTheme(getTheme(s.doc.themeId), s.doc.overrides);
+}
+
 /**
  * Tema base + ajustes del usuario ya aplicados: lo que consume la plantilla.
  *

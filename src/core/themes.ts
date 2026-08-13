@@ -1,5 +1,6 @@
 import type { Theme, ThemeOverrides } from './types';
-import { isLight, tint } from '../lib/color';
+import { tint } from '../lib/color';
+import { bestInk, ensureContrast } from '../lib/contrast';
 
 /**
  * Set curado de temas, portado del CV de referencia que inspiró el proyecto,
@@ -127,6 +128,55 @@ export function resolveTheme(base: Theme, overrides: ThemeOverrides): Theme {
 }
 
 /**
+ * Variantes de color aptas para TEXTO.
+ *
+ * Los colores de un tema cumplen dos papeles muy distintos: pintar superficies
+ * (cabecera, insignias, la barra lateral) y escribir texto encima de la hoja
+ * blanca. Un mismo tono sirve de maravilla para lo primero y puede ser
+ * ilegible para lo segundo — un amarillo de marca sobre blanco se queda en
+ * 1.4:1, y el CV deja de leerse.
+ *
+ * Se derivan tonos aparte SOLO para el texto. Así los adornos conservan
+ * exactamente el color elegido y la lectura queda garantizada.
+ */
+export function primaryTextColor(theme: Theme): string {
+  // Se mide contra `surface` y no contra blanco: es el fondo claro más oscuro
+  // que lleva texto, así que exigir ahí cubre también el blanco puro.
+  return ensureContrast(theme.colors.primary, theme.colors.surface);
+}
+
+/**
+ * Tinta de la cabecera: la que más contraste da sobre el color principal.
+ */
+export function headerInk(theme: Theme): string {
+  return bestInk(theme.colors.primary).ink;
+}
+
+/**
+ * Acento legible SOBRE la cabecera.
+ *
+ * El puesto y los iconos de contacto van en un tono de acento para dar
+ * jerarquía. Con principal oscuro, `accentSoft` ya contrasta de sobra; con uno
+ * claro se perdía —llegó a desaparecer el puesto entero— así que se ajusta
+ * partiendo del mismo color y solo cuando hace falta.
+ */
+export function headerAccent(theme: Theme): string {
+  return ensureContrast(theme.colors.accentSoft, theme.colors.primary);
+}
+
+/**
+ * Variante del acento apta para TEXTO.
+ *
+ * El acento es un tono medio: perfecto como filete o como punto del timeline,
+ * insuficiente como texto de 9pt sobre blanco (los dorados de los temas se
+ * quedaban en 3:1, por debajo del 4.5:1 que pide WCAG AA). Se deriva oscura
+ * conservando el tono, así los adornos no cambian y el texto se lee.
+ */
+export function accentTextColor(theme: Theme): string {
+  return ensureContrast(theme.colors.accent, '#ffffff');
+}
+
+/**
  * Tema → custom properties para el elemento raíz de la hoja.
  * Es el único punto donde JS toca el estilo de la zona imprimible: pasa
  * valores, nunca reglas de maquetación (CLAUDE.md §11).
@@ -136,6 +186,10 @@ export function themeToCssVars(theme: Theme): Record<string, string> {
     '--primary': theme.colors.primary,
     '--primary-soft': theme.colors.primarySoft,
     '--accent': theme.colors.accent,
+    '--accent-text': accentTextColor(theme),
+    '--primary-text': primaryTextColor(theme),
+    '--header-ink': headerInk(theme),
+    '--header-accent': headerAccent(theme),
     '--accent-soft': theme.colors.accentSoft,
     '--surface': theme.colors.surface,
     '--ink': theme.colors.ink,
@@ -148,9 +202,14 @@ export function themeToCssVars(theme: Theme): Record<string, string> {
 }
 
 /**
- * Auto-contraste de cabecera: con un color principal claro, el texto blanco
- * deja de leerse y la plantilla cambia a tinta oscura vía `[data-header]`.
+ * Auto-contraste de cabecera: con un principal claro, el texto blanco deja de
+ * leerse y la plantilla cambia a tinta oscura vía `[data-header]`.
+ *
+ * Antes se decidía con un umbral de brillo fijo (YIQ > 150) heredado del CV de
+ * referencia. Ahora se comparan los dos ratios WCAG y gana el que más contraste
+ * da: un umbral tiene un punto ciego justo en su propia raya, donde un color
+ * puede llevarse la tinta peor de las dos.
  */
 export function headerContrast(theme: Theme): 'light' | 'dark' {
-  return isLight(theme.colors.primary) ? 'light' : 'dark';
+  return bestInk(theme.colors.primary).variant;
 }

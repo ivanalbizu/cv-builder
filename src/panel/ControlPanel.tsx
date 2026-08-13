@@ -13,7 +13,7 @@ import s from './ControlPanel.module.css';
  */
 export function ControlPanel() {
   return (
-    <aside className={`${s.panel} control-panel app-chrome`}>
+    <aside className={`${s.panel} control-panel app-chrome`} aria-label="Panel de control">
       <header className={s.head}>
         <h1 className={s.title}>CV Builder</h1>
         <p className={s.subtitle}>Contenido · Tema · Plantilla</p>

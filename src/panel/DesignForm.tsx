@@ -3,6 +3,7 @@ import { useCVStore, useResolvedTheme } from '../core/store';
 import { THEMES } from '../core/themes';
 import { TEMPLATES } from '../cv/templates';
 import type { Density } from '../core/types';
+import { ContrastReport } from './ContrastReport';
 import { Actions, Field, Panel, Row } from './ui';
 import s from './DesignForm.module.css';
 
@@ -20,7 +21,7 @@ export function DesignForm() {
 
   return (
     <>
-      <Panel title="Plantilla" defaultOpen>
+      <Panel title="Plantilla">
         <div className={s.templateGrid}>
           {TEMPLATES.map((template) => (
             <button
@@ -37,7 +38,7 @@ export function DesignForm() {
         </div>
       </Panel>
 
-      <Panel title="Tema" defaultOpen>
+      <Panel title="Tema">
         <Actions>
           {THEMES.map((t) => (
             <button
@@ -86,9 +87,7 @@ export function DesignForm() {
           </Actions>
         ) : null}
 
-        <p className={s.note}>
-          Si el color principal es claro, el texto de la cabecera pasa a oscuro automáticamente.
-        </p>
+        <ContrastReport theme={theme} />
       </Panel>
 
       <Panel title="Densidad">

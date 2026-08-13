@@ -120,3 +120,26 @@ textarea {
   padding: 4px 10px;
   font-size: 12px;
 }
+
+/* ------------------------------------------------------------ salto teclado */
+
+/* Fuera de pantalla hasta que recibe el foco: solo aparece para quien navega
+   con teclado, sin ocupar sitio para el resto. */
+.skip-link {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  z-index: 200;
+  transform: translateY(-200%);
+  background: var(--app-brand);
+  color: #fff;
+  border-radius: 8px;
+  padding: 8px 14px;
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.skip-link:focus {
+  transform: translateY(0);
+}

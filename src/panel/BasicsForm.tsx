@@ -39,7 +39,7 @@ export function BasicsForm() {
 
   return (
     <>
-      <Panel title="Datos personales" defaultOpen>
+      <Panel title="Datos personales">
         <TextField
           label="Nombre"
           value={basics.name}

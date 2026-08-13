@@ -48,7 +48,7 @@ export function Preview() {
   }, []);
 
   return (
-    <div className={styles.wrap} ref={viewportRef}>
+    <main className={styles.wrap} ref={viewportRef} id="lienzo" aria-label="Vista previa del CV">
       <div className={`${styles.toolbar} toolbar`}>
         <div className={styles.zoomGroup}>
           <button
@@ -71,7 +71,12 @@ export function Preview() {
           </button>
         </div>
 
-        <PageBadge pages={metrics.pages} tight={metrics.tight} />
+        {/* `aria-live`: el recuento cambia solo, según se escribe. Sin esto,
+            quien no ve la pantalla no se entera de que el CV se ha ido a dos
+            páginas — que es el aviso más importante de la app. */}
+        <output className={styles.badgeSlot} aria-live="polite">
+          <PageBadge pages={metrics.pages} tight={metrics.tight} />
+        </output>
 
         <button className="btn btn-primary" onClick={() => commands.exportPDF()}>
           Imprimir / Guardar PDF
@@ -93,7 +98,7 @@ export function Preview() {
         En el diálogo de impresión: <strong>A4</strong>, márgenes{' '}
         <strong>«Ninguno»</strong> y activa <strong>«Gráficos de fondo»</strong>.
       </p>
-    </div>
+    </main>
   );
 }
 

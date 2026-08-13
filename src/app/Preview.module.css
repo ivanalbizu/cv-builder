@@ -59,3 +59,8 @@
   border-top: 1px solid var(--app-line);
   text-align: center;
 }
+
+/* `<output>` es inline por defecto y desalinearía la insignia. */
+.badgeSlot {
+  display: contents;
+}

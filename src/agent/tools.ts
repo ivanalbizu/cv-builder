@@ -1,6 +1,7 @@
 import { commands } from '../core/commands';
-import { useCVStore } from '../core/store';
-import { THEMES } from '../core/themes';
+import { selectResolvedThemeFor, useCVStore } from '../core/store';
+import { THEMES, accentTextColor } from '../core/themes';
+import { bestInk, contrastRatio, wcagLevel } from '../lib/contrast';
 import { TEMPLATES } from '../cv/templates';
 import type { ArgsSpec, JsonSchema } from './schema';
 import { toJsonSchema, validate } from './schema';
@@ -238,7 +239,25 @@ export const TOOLS: Tool[] = [
     run: (a) => {
       commands.setPrimary(String(a.primary));
       if (a.accent) commands.setAccent(String(a.accent));
-      return { ok: true };
+
+      // Se devuelve el contraste resultante para que el agente sepa si acaba
+      // de dejar el CV difícil de leer, en vez de tener que adivinarlo.
+      const theme = selectResolvedThemeFor(useCVStore.getState());
+      const tinta = headerContrastInk(theme.colors.primary);
+      const cabecera = contrastRatio(tinta, theme.colors.primary);
+      const texto = contrastRatio(accentTextColor(theme), '#ffffff');
+
+      return {
+        ok: true,
+        contraste: {
+          cabecera: `${cabecera.toFixed(1)}:1 (${wcagLevel(cabecera, 'large')})`,
+          acentoComoTexto: `${texto.toFixed(1)}:1 (${wcagLevel(texto)})`,
+          nota:
+            accentTextColor(theme).toLowerCase() === theme.colors.accent.toLowerCase()
+              ? undefined
+              : 'El acento se oscurece solo donde hace de texto; los adornos conservan el color.',
+        },
+      };
     },
   },
   {
@@ -309,4 +328,9 @@ export function callTool(name: string, args: unknown = {}): ToolResult {
   } catch (err) {
     return { ok: false, error: err instanceof Error ? err.message : String(err) };
   }
+}
+
+/** Tinta que la cabecera usará sobre ese fondo. Espejo de `headerContrast`. */
+function headerContrastInk(primary: string): string {
+  return bestInk(primary).ink;
 }
