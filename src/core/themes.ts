@@ -8,7 +8,30 @@ import { bestInk, ensureContrast } from '../lib/contrast';
  * el contenido ni la maqueta: solo redefine estas variables.
  */
 
-const SANS_SYSTEM = '"Segoe UI", "Helvetica Neue", Arial, "Noto Sans", sans-serif';
+/**
+ * Tipografías de los temas: SIEMPRE las auto-hospedadas.
+ *
+ * Antes cada tema declaraba un stack del sistema (Georgia, Palatino Linotype,
+ * Didot…). Medido en Linux, eso hacía que «Clásico» y «Boutique» salieran
+ * tipográficamente IDÉNTICOS —ninguna de las dos fuentes existe y caían al
+ * mismo respaldo— y que «Lujo» cambiara de aspecto solo, sin tocar el tema, en
+ * cuanto se auto-hospedó Playfair Display, que su stack ya listaba.
+ *
+ * Un tema que se ve distinto en cada máquina no es un tema. Con las familias
+ * incrustadas, el aspecto es el mismo en todas partes y en el PDF.
+ */
+const SANS_SISTEMA = '"Segoe UI", "Helvetica Neue", Arial, "Noto Sans", sans-serif';
+const SERIF_SISTEMA = 'Georgia, "Iowan Old Style", "Times New Roman", serif';
+
+const INTER = `Inter, ${SANS_SISTEMA}`;
+const SOURCE = `"Source Sans 3", ${SANS_SISTEMA}`;
+const MANROPE = `Manrope, ${SANS_SISTEMA}`;
+const LORA = `Lora, ${SERIF_SISTEMA}`;
+const PLAYFAIR = `"Playfair Display", ${SERIF_SISTEMA}`;
+const GARAMOND = `"EB Garamond", ${SERIF_SISTEMA}`;
+
+/** Tinta y grises compartidos: ya validados contra WCAG AA en los 11 pares. */
+const TINTA = { ink: '#23303a', inkSoft: '#5c6b76' };
 
 export const THEMES: Theme[] = [
   {
@@ -20,15 +43,10 @@ export const THEMES: Theme[] = [
       accent: '#b58a3e',
       accentSoft: '#e3d3b3',
       surface: '#faf7f1',
-      ink: '#23303a',
-      inkSoft: '#5c6b76',
+      ...TINTA,
       rule: '#e2ddd3',
     },
-    fonts: {
-      display: '"Georgia", "Iowan Old Style", "Times New Roman", serif',
-      serif: '"Georgia", "Iowan Old Style", "Times New Roman", serif',
-      sans: SANS_SYSTEM,
-    },
+    fonts: { display: LORA, serif: LORA, sans: SOURCE },
     density: 'compact',
   },
   {
@@ -40,15 +58,10 @@ export const THEMES: Theme[] = [
       accent: '#bd7f2a',
       accentSoft: '#ecd9b3',
       surface: '#f9f4ee',
-      ink: '#23303a',
-      inkSoft: '#5c6b76',
+      ...TINTA,
       rule: '#e2ddd3',
     },
-    fonts: {
-      display: '"Palatino Linotype", "Book Antiqua", Palatino, Georgia, serif',
-      serif: '"Palatino Linotype", "Book Antiqua", Palatino, Georgia, serif',
-      sans: SANS_SYSTEM,
-    },
+    fonts: { display: GARAMOND, serif: GARAMOND, sans: SOURCE },
     density: 'compact',
   },
   {
@@ -60,16 +73,11 @@ export const THEMES: Theme[] = [
       accent: '#2e7d8a',
       accentSoft: '#cfe4e8',
       surface: '#f1f6f7',
-      ink: '#23303a',
-      inkSoft: '#5c6b76',
+      ...TINTA,
       rule: '#dfe7e9',
     },
-    fonts: {
-      // Tema «todo sans»: sin serif, para un aire más corporativo.
-      display: SANS_SYSTEM,
-      serif: SANS_SYSTEM,
-      sans: SANS_SYSTEM,
-    },
+    // Todo sans, sin serif: es lo que le da el aire corporativo.
+    fonts: { display: INTER, serif: INTER, sans: INTER },
     density: 'compact',
   },
   {
@@ -81,15 +89,73 @@ export const THEMES: Theme[] = [
       accent: '#b8912f',
       accentSoft: '#e7d6a6',
       surface: '#f7f5ef',
-      ink: '#23303a',
-      inkSoft: '#5c6b76',
+      ...TINTA,
       rule: '#e4e0d6',
     },
-    fonts: {
-      display: '"Didot", "Bodoni MT", "Playfair Display", Georgia, serif',
-      serif: '"Didot", "Bodoni MT", "Playfair Display", Georgia, serif',
-      sans: SANS_SYSTEM,
+    // Playfair es el alto contraste que el tema buscaba con Didot.
+    fonts: { display: PLAYFAIR, serif: PLAYFAIR, sans: INTER },
+    density: 'compact',
+  },
+  {
+    id: 'botanico',
+    name: 'Botánico',
+    colors: {
+      primary: '#1f4436',
+      primarySoft: '#2d5c49',
+      accent: '#7d7a2c',
+      accentSoft: '#dfe0bc',
+      surface: '#f3f6f0',
+      ...TINTA,
+      rule: '#dde4da',
     },
+    fonts: { display: LORA, serif: LORA, sans: MANROPE },
+    density: 'compact',
+  },
+  {
+    id: 'tinta',
+    name: 'Tinta',
+    colors: {
+      // Monocromo de verdad: pensado para fotocopia e impresión en blanco y
+      // negro, donde cualquier color acaba siendo una mancha gris.
+      primary: '#1c1c1c',
+      primarySoft: '#333333',
+      accent: '#5f5f5f',
+      accentSoft: '#c9c9c9',
+      surface: '#f4f4f4',
+      ...TINTA,
+      rule: '#dcdcdc',
+    },
+    fonts: { display: GARAMOND, serif: GARAMOND, sans: MANROPE },
+    density: 'compact',
+  },
+  {
+    id: 'indigo',
+    name: 'Índigo',
+    colors: {
+      primary: '#2b2a63',
+      primarySoft: '#3f3d86',
+      accent: '#5a53b8',
+      accentSoft: '#d5d2ee',
+      surface: '#f3f3fa',
+      ...TINTA,
+      rule: '#dedded',
+    },
+    fonts: { display: MANROPE, serif: MANROPE, sans: INTER },
+    density: 'compact',
+  },
+  {
+    id: 'granate',
+    name: 'Granate',
+    colors: {
+      primary: '#6b2733',
+      primarySoft: '#873543',
+      accent: '#b4553c',
+      accentSoft: '#f0cfc2',
+      surface: '#faf2f0',
+      ...TINTA,
+      rule: '#ebdcd8',
+    },
+    fonts: { display: PLAYFAIR, serif: LORA, sans: SOURCE },
     density: 'compact',
   },
 ];

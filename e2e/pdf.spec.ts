@@ -12,7 +12,8 @@ import { PDFDocument } from 'pdf-lib';
  */
 
 const TEMPLATES = ['single-column', 'sidebar', 'minimal'] as const;
-const THEMES = ['clasico', 'boutique', 'corporativo', 'lujo'] as const;
+const THEMES = ['clasico', 'boutique', 'corporativo', 'lujo',
+  'botanico', 'tinta', 'indigo', 'granate'] as const;
 
 /** Los mismos ajustes que el diálogo de Chrome con «márgenes: Ninguno». */
 const PDF_OPTIONS = {

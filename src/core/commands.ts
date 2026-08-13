@@ -229,11 +229,17 @@ export const commands = {
     });
   },
 
-  /** Cambiar de tema descarta los ajustes de color: el tema manda de nuevo. */
+  /**
+   * Cambiar de tema descarta color Y tipografía: el tema manda de nuevo.
+   *
+   * Las fuentes se descartan por el mismo motivo que los colores. Desde que
+   * cada tema trae su propia pareja tipográfica, conservar una elección previa
+   * dejaba el tema a medio aplicar y su vista previa dejaba de decir la verdad.
+   */
   setTheme(themeId: string): void {
     update((doc) => {
       doc.themeId = getTheme(themeId).id;
-      doc.overrides = { ...doc.overrides, primary: undefined, accent: undefined };
+      doc.overrides = { ...doc.overrides, primary: undefined, accent: undefined, fonts: undefined };
     });
   },
 
