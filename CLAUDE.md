@@ -288,8 +288,10 @@ Exponer también en `window.cvBuilder` (fallback sin MCP) para automatizar/teste
 - **Imagen:** subir, recortar (crop circular/rect), `object-fit` cover/contain,
   color de fondo, posición. Avisar si conviene PNG con transparencia real.
 - **Plantillas:** selector visual de layouts preestablecidos.
-- **Tema:** pickers de color (principal/acento) con **sincronización** al tema
-  activo y **contraste automático** de cabecera; densidad comfy/compact.
+- **Tema:** un solo bloque con preajustes, colores, tipografía y densidad —
+  porque `Theme` es `{colors, fonts, density}` y tenerlo repartido en cuatro
+  paneles partía lo que va junto. Incluye informe de contraste y el ayudante de
+  colores de marca (ver abajo).
 - **Tipografía:** elegir familia para display/cuerpo. (Ver §7.)
 - **Exportar/Guardar:** PDF por impresión, **HTML autónomo** (para enviar o
   publicar), exportar/importar JSON (para volver a editarlo), autosave en
@@ -515,6 +517,16 @@ Solo tocan TEMA y PLANTILLA; el contenido nunca se lee de la URL.
   - *Temas*: de 4 a **8** (Botánico, Tinta, Índigo y Granate), cada uno con su
     pareja tipográfica incrustada. `setTheme` descarta también las fuentes
     elegidas a mano, por el mismo motivo que ya descartaba los colores.
+  - *Panel de aspecto*: de cuatro bloques a **dos** (Plantilla · Tema). Tres de
+    los cuatro eran facetas del mismo `Theme`, mientras que la plantilla, que sí
+    es independiente, aparecía como una más. Ahora el panel refleja la
+    separación de §1.
+  - *Colores de marca sin IA en la app*: se prepara una pregunta («entra en esta
+    URL y dime sus dos colores») que el usuario lleva a ChatGPT, Claude o
+    Gemini, y se pega la respuesta. Esquiva CORS, claves de API y coste, y nada
+    sale del navegador salvo que el usuario lo lleve. El riesgo de que el
+    asistente falle está cubierto: los tokens derivados garantizan AA sea cual
+    sea el color, así que un error da un CV feo, nunca ilegible.
   - *Compartir*: **exportar a HTML autónomo** (`src/lib/exportarHtml.ts`). Un
     solo archivo con estilos, tipografías y foto incrustados; se abre sin red y
     al imprimirlo da el MISMO PDF que la app — comparado PDF contra PDF en el
