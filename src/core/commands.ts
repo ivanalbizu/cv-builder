@@ -36,6 +36,18 @@ import type {
 const store = () => useCVStore.getState();
 const update = (recipe: (draft: CVDocument) => void) => store().update(recipe);
 
+/**
+ * Escritura CONTINUA: los cambios seguidos con la misma clave se funden en un
+ * solo paso de deshacer.
+ *
+ * Es lo que distingue teclear —donde volver atrás letra a letra sería inútil—
+ * de las acciones estructurales, que siempre merecen su propio paso. La clave
+ * incluye el id de lo que se edita, para que pasar de un campo a otro corte la
+ * fusión aunque se escriba deprisa.
+ */
+const editar = (clave: string, recipe: (draft: CVDocument) => void) =>
+  store().update(recipe, { fusionar: clave });
+
 // --- helpers ---------------------------------------------------------------
 
 function findSection(doc: CVDocument, sectionId: Id): Section | undefined {
@@ -91,7 +103,7 @@ export const commands = {
   // ---- contenido: básicos -------------------------------------------------
 
   setBasics(patch: Partial<Omit<Basics, 'contact' | 'photoOptions'>>): void {
-    update((doc) => {
+    editar(`basics:${Object.keys(patch).join(',')}`, (doc) => {
       Object.assign(doc.data.basics, patch);
     });
   },
@@ -103,7 +115,7 @@ export const commands = {
   },
 
   setPhotoOptions(patch: Partial<Basics['photoOptions']>): void {
-    update((doc) => {
+    editar(`photo:${Object.keys(patch).join(',')}`, (doc) => {
       Object.assign(doc.data.basics.photoOptions, patch);
     });
   },
@@ -117,7 +129,7 @@ export const commands = {
   },
 
   updateContact(id: Id, patch: Partial<Omit<ContactLink, 'id'>>): void {
-    update((doc) => {
+    editar(`contact:${id}:${Object.keys(patch).join(',')}`, (doc) => {
       const link = doc.data.basics.contact.find((c) => c.id === id);
       if (link) Object.assign(link, patch);
     });
@@ -143,7 +155,7 @@ export const commands = {
   },
 
   updateSection(id: Id, patch: { title?: string; icon?: Section['icon'] }): void {
-    update((doc) => {
+    editar(`section:${id}:${Object.keys(patch).join(',')}`, (doc) => {
       const section = findSection(doc, id);
       if (section) Object.assign(section, patch);
     });
@@ -184,7 +196,7 @@ export const commands = {
   },
 
   updateItem(sectionId: Id, itemId: Id, patch: Record<string, unknown>): void {
-    update((doc) => {
+    editar(`item:${itemId}:${Object.keys(patch).join(',')}`, (doc) => {
       const section = findListSection(doc, sectionId);
       const item = section?.items.find((i) => i.id === itemId);
       if (item) Object.assign(item, patch);
@@ -215,7 +227,7 @@ export const commands = {
   },
 
   setCustomBody(sectionId: Id, body: string): void {
-    update((doc) => {
+    editar(`custom:${sectionId}`, (doc) => {
       const section = findSection(doc, sectionId);
       if (section?.type === 'custom') section.body = body;
     });
@@ -244,13 +256,13 @@ export const commands = {
   },
 
   setPrimary(hex: string): void {
-    update((doc) => {
+    editar('color:primary', (doc) => {
       doc.overrides.primary = hex;
     });
   },
 
   setAccent(hex: string): void {
-    update((doc) => {
+    editar('color:accent', (doc) => {
       doc.overrides.accent = hex;
     });
   },
@@ -311,6 +323,23 @@ export const commands = {
 
   setZoom(zoom: number): void {
     store().setZoom(zoom);
+  },
+
+  // ---- historial ----------------------------------------------------------
+
+  /** Deshace el último cambio. Sin nada que deshacer, no hace nada. */
+  undo(): void {
+    store().undo();
+  },
+
+  redo(): void {
+    store().redo();
+  },
+
+  /** Qué hay disponible; lo usan los botones y el agente para decidir. */
+  historial(): { puedeDeshacer: boolean; puedeRehacer: boolean } {
+    const { pasado, futuro } = store();
+    return { puedeDeshacer: pasado.length > 0, puedeRehacer: futuro.length > 0 };
   },
 
   /**

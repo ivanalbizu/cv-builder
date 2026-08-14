@@ -274,6 +274,31 @@ export const TOOLS: Tool[] = [
     },
   },
 
+  // ---- historial -----------------------------------------------------------
+  {
+    name: 'undo',
+    description:
+      'Deshace el último cambio. Es la red de seguridad para editar sin miedo: si una ' +
+      'reescritura no ha quedado bien, se revierte en vez de intentar recomponerla a mano. ' +
+      'Las ediciones seguidas de un mismo campo cuentan como un solo paso.',
+    args: {},
+    run: () => {
+      commands.undo();
+      return commands.historial();
+    },
+  },
+  {
+    name: 'redo',
+    description:
+      'Rehace lo último deshecho. Cualquier edición nueva descarta lo que hubiera pendiente ' +
+      'de rehacer, así que úsalo antes de seguir tocando el CV.',
+    args: {},
+    run: () => {
+      commands.redo();
+      return commands.historial();
+    },
+  },
+
   // ---- salida --------------------------------------------------------------
   {
     name: 'exportPDF',

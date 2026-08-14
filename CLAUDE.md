@@ -532,8 +532,16 @@ Solo tocan TEMA y PLANTILLA; el contenido nunca se lee de la URL.
     al imprimirlo da el MISMO PDF que la app — comparado PDF contra PDF en el
     e2e, no a ojo. Es el formato del que nació el proyecto.
   - Numeración de página cuando el CV pasa de una hoja (§2).
+  - *Deshacer/rehacer*: historial en el store, botones, Ctrl/Cmd+Z y
+    herramientas `undo`/`redo` para el agente. Que TODO pase por la capa de
+    comandos es lo que lo hace barato: no hay más caminos de escritura que
+    anotar. La granularidad es lo delicado — los comandos de escritura continua
+    (teclear, arrastrar un color) declaran una clave de fusión y sus cambios
+    seguidos son un solo paso; los estructurales siempre son un paso propio.
 
 **Pendiente de fase 5:** i18n.
+
+**Siguiente fuera de fase:** variantes del documento (una por candidatura).
 
 **Números de la suite en este punto:** 254 tests unitarios y 44 e2e.
 
