@@ -1,5 +1,5 @@
 import { commands } from '../core/commands';
-import { selectResolvedThemeFor, useCVStore } from '../core/store';
+import { docActivo, selectResolvedThemeFor, useCVStore } from '../core/store';
 import { THEMES, accentTextColor } from '../core/themes';
 import { bestInk, contrastRatio, wcagLevel } from '../lib/contrast';
 import { TEMPLATES } from '../cv/templates';
@@ -50,7 +50,7 @@ export const TOOLS: Tool[] = [
       'Útil para comprobar si un cambio de contenido lo ha sacado de una página.',
     args: {},
     run: () => {
-      const { doc } = useCVStore.getState();
+      const doc = docActivo(useCVStore.getState());
       return {
         templateId: doc.templateId,
         themeId: doc.themeId,
@@ -271,6 +271,36 @@ export const TOOLS: Tool[] = [
     run: (a) => {
       commands.setDensity(a.density as 'compact');
       return { ok: true };
+    },
+  },
+
+  // ---- variantes -----------------------------------------------------------
+  {
+    name: 'listarVariantes',
+    description:
+      'Lista las versiones del CV, la más reciente primero, indicando cuál está en edición. ' +
+      'Cada versión tiene su propio contenido, tema y plantilla.',
+    args: {},
+    run: () => commands.variantes(),
+  },
+  {
+    name: 'duplicarVariante',
+    description:
+      'Copia la versión actual y pasa a editar la copia. ÚSALO ANTES de adaptar el CV a una ' +
+      'oferta concreta: así reescribes sobre la copia y el CV general queda intacto. Pon un ' +
+      'nombre que identifique la candidatura, por ejemplo «Recepción — Hotel Aurora».',
+    args: { nombre: { kind: 'string', description: 'Nombre de la nueva versión' } },
+    run: (a) => ({ varianteId: commands.duplicarVariante(String(a.nombre)) }),
+  },
+  {
+    name: 'activarVariante',
+    description:
+      'Cambia la versión en edición. Vacía el historial de deshacer, porque un paso atrás ' +
+      'pertenece a la versión donde se dio.',
+    args: { varianteId: { kind: 'string', description: 'Id devuelto por listarVariantes' } },
+    run: (a) => {
+      commands.activarVariante(String(a.varianteId));
+      return commands.variantes();
     },
   },
 

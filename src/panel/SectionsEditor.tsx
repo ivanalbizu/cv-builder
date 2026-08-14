@@ -1,5 +1,5 @@
 import { commands } from '../core/commands';
-import { useCVStore } from '../core/store';
+import { docActivo, useCVStore } from '../core/store';
 import type {
   EducationItem,
   ExperienceItem,
@@ -38,7 +38,7 @@ const fromCsv = (text: string) =>
     .filter(Boolean);
 
 export function SectionsEditor() {
-  const sections = useCVStore((st) => st.doc.data.sections);
+  const sections = useCVStore((st) => docActivo(st).data.sections);
 
   return (
     <>

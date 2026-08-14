@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { commands } from './commands';
-import { useCVStore } from './store';
+import { docActivo, useCVStore } from './store';
 import { SEED_DOCUMENT } from './seed';
 import type { ExperienceItem } from './types';
 
@@ -13,7 +13,7 @@ import type { ExperienceItem } from './types';
  * dentro del paso anterior.
  */
 
-const doc = () => useCVStore.getState().doc;
+const doc = () => docActivo(useCVStore.getState());
 const nombre = () => doc().data.basics.name;
 const experiencia = () => SEED_DOCUMENT.data.sections[0]!.id;
 

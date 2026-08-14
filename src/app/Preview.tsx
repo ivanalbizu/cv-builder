@@ -3,13 +3,13 @@ import { A4Canvas } from '../cv/canvas/A4Canvas';
 import { usePageMetrics } from '../cv/canvas/usePageMetrics';
 import { getTemplate } from '../cv/templates';
 import { commands } from '../core/commands';
-import { useCVStore, useResolvedTheme } from '../core/store';
+import { docActivo, useCVStore, useResolvedTheme } from '../core/store';
 import styles from './Preview.module.css';
 
 const ZOOM_STEPS = [0.5, 0.6, 0.7, 0.8, 0.9, 1, 1.25, 1.5];
 
 export function Preview() {
-  const doc = useCVStore((s) => s.doc);
+  const doc = useCVStore((s) => docActivo(s));
   const puedeDeshacer = useCVStore((s) => s.pasado.length > 0);
   const puedeRehacer = useCVStore((s) => s.futuro.length > 0);
   const zoom = useCVStore((s) => s.zoom);

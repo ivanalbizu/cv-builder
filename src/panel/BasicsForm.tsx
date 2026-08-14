@@ -1,6 +1,6 @@
 import { useRef, useState } from 'react';
 import { commands } from '../core/commands';
-import { useCVStore } from '../core/store';
+import { docActivo, useCVStore } from '../core/store';
 import type { ContactKind } from '../core/types';
 import { fileToDataURL, photoWarning } from '../lib/image';
 import { PhotoCropper } from './PhotoCropper';
@@ -15,7 +15,7 @@ const CONTACT_KINDS: { value: ContactKind; label: string; prefix: string }[] = [
 ];
 
 export function BasicsForm() {
-  const basics = useCVStore((s) => s.doc.data.basics);
+  const basics = useCVStore((s) => docActivo(s).data.basics);
   const fileInput = useRef<HTMLInputElement>(null);
   const [warning, setWarning] = useState<string | null>(
     basics.photo ? photoWarning(basics.photo) : null,

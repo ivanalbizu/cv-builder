@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 import { TOOLS, callTool, toolCatalog } from './tools';
-import { useCVStore } from '../core/store';
+import { docActivo, useCVStore } from '../core/store';
 import { SEED_DOCUMENT } from '../core/seed';
 import type { CVData, ExperienceItem } from '../core/types';
 
@@ -12,7 +12,7 @@ import type { CVData, ExperienceItem } from '../core/types';
  * en esta capa.
  */
 
-const doc = () => useCVStore.getState().doc;
+const doc = () => docActivo(useCVStore.getState());
 const experienceId = () => SEED_DOCUMENT.data.sections[0]!.id;
 
 beforeEach(() => {

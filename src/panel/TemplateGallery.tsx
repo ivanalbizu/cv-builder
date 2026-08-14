@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { commands } from '../core/commands';
-import { useCVStore, useResolvedTheme } from '../core/store';
+import { docActivo, useCVStore, useResolvedTheme } from '../core/store';
 import { headerContrast, themeToCssVars } from '../core/themes';
 import { TEMPLATES } from '../cv/templates';
 import type { CVData, Theme } from '../core/types';
@@ -56,8 +56,8 @@ function Miniatura({ data, theme, Component }: { data: CVData; theme: Theme } & 
 }
 
 export function TemplateGallery() {
-  const templateId = useCVStore((st) => st.doc.templateId);
-  const data = useCVStore((st) => st.doc.data);
+  const templateId = useCVStore((st) => docActivo(st).templateId);
+  const data = useCVStore((st) => docActivo(st).data);
   const theme = useResolvedTheme();
 
   return (
