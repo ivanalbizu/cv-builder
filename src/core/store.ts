@@ -4,6 +4,7 @@ import { persist } from 'zustand/middleware';
 import { immer } from 'zustand/middleware/immer';
 import type { CVDocument, Theme } from './types';
 import { SEED_DOCUMENT } from './seed';
+import { newId } from '../lib/id';
 import { getTheme, resolveTheme } from './themes';
 
 /**
@@ -18,6 +19,19 @@ import { getTheme, resolveTheme } from './themes';
  * escritura, basta con anotar el documento anterior aquí para que TODO sea
  * deshacible, incluido lo que haga un agente.
  */
+
+/**
+ * Una versión del CV. Adaptar el currículum a una oferta produce variantes por
+ * naturaleza —una por candidatura—, y con un solo documento adaptarlo a la
+ * segunda destruía la primera.
+ */
+export interface Variante {
+  id: string;
+  nombre: string;
+  doc: CVDocument;
+  /** Epoch ms; ordena la lista por lo último tocado. */
+  modificada: number;
+}
 
 /**
  * Tope del historial.
@@ -46,15 +60,14 @@ export interface OpcionesEdicion {
 }
 
 export interface CVStore {
-  doc: CVDocument;
+  variantes: Variante[];
+  activaId: string;
   /** Escala de la vista previa en pantalla. Nunca afecta a la impresión. */
   zoom: number;
 
-  /** Documentos anteriores, del más antiguo al más reciente. */
+  /** Documentos anteriores de la variante ACTIVA, del más antiguo al último. */
   pasado: CVDocument[];
-  /** Documentos deshechos, listos para rehacer. */
   futuro: CVDocument[];
-  /** Última fusión aplicada, para saber si la siguiente edición continúa. */
   ultimaFusion: { clave: string; en: number } | null;
 
   /** Punto de escritura único; uso reservado a `core/commands.ts`. */
@@ -64,19 +77,35 @@ export interface CVStore {
 
   undo: () => void;
   redo: () => void;
-  /** Vacía el historial. Para cargar un documento «desde cero». */
   olvidarHistorial: () => void;
+
+  crearVariante: (nombre: string, doc: CVDocument) => string;
+  renombrarVariante: (id: string, nombre: string) => void;
+  eliminarVariante: (id: string) => void;
+  activarVariante: (id: string) => void;
 }
 
 export const STORAGE_KEY = 'cv-builder:doc:v1';
 
+/**
+ * El documento en edición. Es DERIVADO de la variante activa, no un campo
+ * aparte: con dos copias acabarían divergiendo en cuanto una ruta de escritura
+ * olvidara actualizar la otra.
+ */
+export function docActivo(s: CVStore): CVDocument {
+  return (s.variantes.find((v) => v.id === s.activaId) ?? s.variantes[0]!).doc;
+}
+
+function varianteInicial(): Variante {
+  return { id: newId('v'), nombre: 'Mi CV', doc: SEED_DOCUMENT, modificada: Date.now() };
+}
+
 export const useCVStore = create<CVStore>()(
   persist(
     immer((set, get) => {
-      /**
-       * Anota el documento anterior antes de sustituirlo.
-       * Devuelve `false` si la edición debe fundirse con la anterior.
-       */
+      const inicial = varianteInicial();
+
+      /** Anota el documento anterior; decide si la edición se funde con la previa. */
       const registrar = (anterior: CVDocument, fusionar?: string) => {
         const { ultimaFusion } = get();
         const continua =
@@ -85,6 +114,9 @@ export const useCVStore = create<CVStore>()(
           Date.now() - ultimaFusion.en < VENTANA_FUSION_MS;
 
         set((state) => {
+          const v = state.variantes.find((x) => x.id === state.activaId);
+          if (v) v.modificada = Date.now();
+
           if (!continua) {
             state.pasado.push(anterior);
             if (state.pasado.length > MAX_HISTORIAL) state.pasado.shift();
@@ -95,28 +127,37 @@ export const useCVStore = create<CVStore>()(
         });
       };
 
+      const escribirEnActiva = (fn: (doc: CVDocument) => void) =>
+        set((state) => {
+          const v = state.variantes.find((x) => x.id === state.activaId);
+          if (v) fn(v.doc);
+        });
+
       return {
-        doc: SEED_DOCUMENT,
+        variantes: [inicial],
+        activaId: inicial.id,
         zoom: 1,
         pasado: [],
         futuro: [],
         ultimaFusion: null,
 
         update: (recipe, opciones) => {
-          const anterior = get().doc;
-          set((state) => void recipe(state.doc));
+          const anterior = docActivo(get());
+          escribirEnActiva(recipe);
           // immer devuelve el MISMO objeto si la receta no cambió nada; sin
           // esta guarda, abrir un desplegable y elegir lo mismo dejaría un
           // paso de deshacer que no deshace nada.
-          if (get().doc === anterior) return;
+          if (docActivo(get()) === anterior) return;
           registrar(anterior, opciones?.fusionar);
         },
 
         replaceDoc: (doc) => {
-          const anterior = get().doc;
+          const anterior = docActivo(get());
           if (doc === anterior) return;
+          escribirEnActiva(() => {});
           set((state) => {
-            state.doc = doc;
+            const v = state.variantes.find((x) => x.id === state.activaId);
+            if (v) v.doc = doc;
           });
           // Importar un JSON o cargar la semilla también se deshace: son la
           // clase de acción que más se lamenta si no hay vuelta atrás.
@@ -132,8 +173,10 @@ export const useCVStore = create<CVStore>()(
           set((state) => {
             const anterior = state.pasado.pop();
             if (!anterior) return;
-            state.futuro.unshift(state.doc);
-            state.doc = anterior;
+            const v = state.variantes.find((x) => x.id === state.activaId);
+            if (!v) return;
+            state.futuro.unshift(v.doc);
+            v.doc = anterior;
             // Se corta la fusión: lo siguiente que se escriba es un paso nuevo.
             state.ultimaFusion = null;
           }),
@@ -142,8 +185,10 @@ export const useCVStore = create<CVStore>()(
           set((state) => {
             const siguiente = state.futuro.shift();
             if (!siguiente) return;
-            state.pasado.push(state.doc);
-            state.doc = siguiente;
+            const v = state.variantes.find((x) => x.id === state.activaId);
+            if (!v) return;
+            state.pasado.push(v.doc);
+            v.doc = siguiente;
             state.ultimaFusion = null;
           }),
 
@@ -153,14 +198,69 @@ export const useCVStore = create<CVStore>()(
             state.futuro = [];
             state.ultimaFusion = null;
           }),
+
+        // ---- variantes ------------------------------------------------------
+
+        crearVariante: (nombre, doc) => {
+          const id = newId('v');
+          set((state) => {
+            state.variantes.push({ id, nombre, doc, modificada: Date.now() });
+            state.activaId = id;
+            // Cambiar de variante corta el historial: deshacer después de un
+            // salto restauraría el documento de OTRA versión sobre esta.
+            state.pasado = [];
+            state.futuro = [];
+            state.ultimaFusion = null;
+          });
+          return id;
+        },
+
+        renombrarVariante: (id, nombre) =>
+          set((state) => {
+            const v = state.variantes.find((x) => x.id === id);
+            if (v && nombre.trim()) v.nombre = nombre.trim();
+          }),
+
+        eliminarVariante: (id) =>
+          set((state) => {
+            // Nunca dejar la app sin documento: con una sola, no se borra.
+            if (state.variantes.length <= 1) return;
+            state.variantes = state.variantes.filter((v) => v.id !== id);
+            if (state.activaId === id) {
+              state.activaId = state.variantes[0]!.id;
+              state.pasado = [];
+              state.futuro = [];
+              state.ultimaFusion = null;
+            }
+          }),
+
+        activarVariante: (id) =>
+          set((state) => {
+            if (!state.variantes.some((v) => v.id === id) || state.activaId === id) return;
+            state.activaId = id;
+            state.pasado = [];
+            state.futuro = [];
+            state.ultimaFusion = null;
+          }),
       };
     }),
     {
       name: STORAGE_KEY,
-      // Solo el documento. El zoom es estado de UI, y el historial es de la
+      version: 2,
+      /**
+       * v1 guardaba un único `doc`. Se envuelve en una variante para no perder
+       * el CV de quien ya venía usando la app.
+       */
+      migrate: (guardado, version) => {
+        if (version >= 2) return guardado as { variantes: Variante[]; activaId: string };
+        const doc = (guardado as { doc?: CVDocument } | null)?.doc ?? SEED_DOCUMENT;
+        const v: Variante = { id: newId('v'), nombre: 'Mi CV', doc, modificada: Date.now() };
+        return { variantes: [v], activaId: v.id };
+      },
+      // Solo las variantes. El zoom es estado de UI, y el historial es de la
       // sesión: recuperar al recargar un «deshacer» de hace tres días sería
       // más desconcertante que útil, y multiplicaría el tamaño en localStorage.
-      partialize: (state) => ({ doc: state.doc }),
+      partialize: (state) => ({ variantes: state.variantes, activaId: state.activaId }),
     },
   ),
 );
@@ -169,11 +269,12 @@ export const useCVStore = create<CVStore>()(
 // Selectores (lectura). La UI lee por aquí; escribir es cosa de los comandos.
 // ---------------------------------------------------------------------------
 
-export const selectDoc = (s: CVStore): CVDocument => s.doc;
+export const selectDoc = docActivo;
 
 /** Tema resuelto fuera de React (herramientas del agente, scripts). */
 export function selectResolvedThemeFor(s: CVStore): Theme {
-  return resolveTheme(getTheme(s.doc.themeId), s.doc.overrides);
+  const doc = docActivo(s);
+  return resolveTheme(getTheme(doc.themeId), doc.overrides);
 }
 
 /**
@@ -184,7 +285,7 @@ export function selectResolvedThemeFor(s: CVStore): Theme {
  * renders por snapshot no estable).
  */
 export function useResolvedTheme(): Theme {
-  const themeId = useCVStore((s) => s.doc.themeId);
-  const overrides = useCVStore((s) => s.doc.overrides);
+  const themeId = useCVStore((s) => docActivo(s).themeId);
+  const overrides = useCVStore((s) => docActivo(s).overrides);
   return useMemo(() => resolveTheme(getTheme(themeId), overrides), [themeId, overrides]);
 }

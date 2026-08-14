@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 import { commands } from './commands';
-import { useCVStore } from './store';
+import { docActivo, useCVStore } from './store';
 import { SEED_DOCUMENT } from './seed';
 import { getTheme, resolveTheme } from './themes';
 import type { ExperienceItem, LanguageItem } from './types';
@@ -11,7 +11,7 @@ import type { ExperienceItem, LanguageItem } from './types';
  * rompe en los dos sitios.
  */
 
-const doc = () => useCVStore.getState().doc;
+const doc = () => docActivo(useCVStore.getState());
 
 beforeEach(() => {
   useCVStore.getState().replaceDoc(structuredClone(SEED_DOCUMENT));

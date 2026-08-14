@@ -2,7 +2,7 @@ import { act, render, screen } from '@testing-library/react';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { SectionsEditor } from './SectionsEditor';
 import { commands } from '../core/commands';
-import { useCVStore } from '../core/store';
+import { docActivo, useCVStore } from '../core/store';
 import { SEED_DOCUMENT } from '../core/seed';
 
 /**
@@ -43,7 +43,7 @@ describe('SectionsEditor', () => {
 
   it('refleja los cambios del store: al reordenar, cambian los rótulos', () => {
     render(<SectionsEditor />);
-    const experience = useCVStore.getState().doc.data.sections[0]!;
+    const experience = docActivo(useCVStore.getState()).data.sections[0]!;
     const items = (experience as { items: { id: string }[] }).items;
 
     // El comando muta el store fuera de React: `act` fuerza el repintado

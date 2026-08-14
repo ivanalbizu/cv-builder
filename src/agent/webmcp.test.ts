@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { findModelContext, installWebMCP, type ModelContextLike } from './webmcp';
 import { TOOLS } from './tools';
-import { useCVStore } from '../core/store';
+import { docActivo, useCVStore } from '../core/store';
 import { SEED_DOCUMENT } from '../core/seed';
 
 /**
@@ -84,7 +84,7 @@ describe('installWebMCP', () => {
     const out = await setBasics.execute({ title: 'Jefe de recepción' });
 
     expect(out.content[0]!.type).toBe('text');
-    expect(useCVStore.getState().doc.data.basics.title).toBe('Jefe de recepción');
+    expect(docActivo(useCVStore.getState()).data.basics.title).toBe('Jefe de recepción');
   });
 
   it('un error del agente vuelve como texto, no como excepción', async () => {
@@ -97,7 +97,7 @@ describe('installWebMCP', () => {
     // Lanzar cortaría la conversación por un argumento mal escrito, que es
     // justo el fallo más probable de un agente.
     expect(out.content[0]!.text).toMatch(/^Error: .*debe ser uno de/);
-    expect(useCVStore.getState().doc.themeId).toBe('clasico');
+    expect(docActivo(useCVStore.getState()).themeId).toBe('clasico');
   });
 
   it('getCV devuelve el CV serializado en el content', async () => {

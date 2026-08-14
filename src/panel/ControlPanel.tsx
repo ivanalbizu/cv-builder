@@ -1,7 +1,9 @@
 import { BasicsForm } from './BasicsForm';
+import { Variantes } from './Variantes';
 import { DesignForm } from './DesignForm';
 import { DocumentForm } from './DocumentForm';
 import { SectionsEditor } from './SectionsEditor';
+import { Panel } from './ui';
 import s from './ControlPanel.module.css';
 
 /**
@@ -20,6 +22,9 @@ export function ControlPanel() {
       </header>
 
       <div className={s.scroll}>
+        <Panel title="Versiones">
+          <Variantes />
+        </Panel>
         <BasicsForm />
         <SectionsEditor />
         <DesignForm />

@@ -541,7 +541,25 @@ Solo tocan TEMA y PLANTILLA; el contenido nunca se lee de la URL.
 
 **Pendiente de fase 5:** i18n.
 
-**Siguiente fuera de fase:** variantes del documento (una por candidatura).
+### Variantes del documento
+
+El store guarda una **lista de versiones** y el documento en edición es
+**derivado** de la activa (`docActivo`), no un campo aparte: con dos copias
+acabarían divergiendo en cuanto una ruta de escritura olvidara actualizar la
+otra. Cada versión lleva su contenido, su tema y su plantilla.
+
+- Adaptar el CV a una oferta produce versiones por naturaleza; con un documento
+  único, adaptarlo a la segunda destruía la primera.
+- Es también lo que hace utilizable la edición por agente: se duplica, se le
+  deja reescribir sobre la copia y el CV bueno no se toca. La herramienta
+  `duplicarVariante` lo dice en su descripción.
+- **Cambiar de versión vacía el historial**: un paso atrás pertenece a la
+  versión donde se dio, y restaurarlo sobre otra la corrompería.
+- Nunca se puede eliminar la última: la app no debe quedarse sin documento.
+- `persist` va por la **versión 2** con `migrate`; la clave de almacenamiento no
+  cambia, así que el CV de quien ya usaba la app se envuelve en una variante en
+  vez de desaparecer. Hay tests que ejercen la migración, incluido un guardado
+  corrupto.
 
 **Números de la suite en este punto:** 254 tests unitarios y 44 e2e.
 

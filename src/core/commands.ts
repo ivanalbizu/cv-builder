@@ -1,6 +1,6 @@
 import { newId } from '../lib/id';
 import { SEED_DOCUMENT, emptyDocument } from './seed';
-import { useCVStore } from './store';
+import { docActivo, useCVStore } from './store';
 import { DEFAULT_THEME_ID, getTheme } from './themes';
 import type {
   Basics,
@@ -34,6 +34,8 @@ import type {
  */
 
 const store = () => useCVStore.getState();
+/** Documento en edición: el de la variante activa. */
+const doc = () => docActivo(store());
 const update = (recipe: (draft: CVDocument) => void) => store().update(recipe);
 
 /**
@@ -181,7 +183,7 @@ export const commands = {
 
   /** Añade un item (vacío o con valores) a una sección con lista. */
   addItem(sectionId: Id, values?: Record<string, unknown>): Id | null {
-    const section = findListSection(store().doc, sectionId);
+    const section = findListSection(doc(), sectionId);
     if (!section) return null;
     const id = newId(section.type[0]);
     update((doc) => {
@@ -290,13 +292,13 @@ export const commands = {
   // ---- documento ----------------------------------------------------------
 
   getCV(): CVData {
-    return store().doc.data;
+    return doc().data;
   },
 
   toJSON(): CVDocument {
     // Copia profunda: el documento del store es inmutable (immer) y no
     // queremos que quien lo reciba pueda alterarlo por referencia.
-    return structuredClone(store().doc);
+    return structuredClone(doc());
   },
 
   loadJSON(input: CVDocument | CVData): void {
@@ -323,6 +325,45 @@ export const commands = {
 
   setZoom(zoom: number): void {
     store().setZoom(zoom);
+  },
+
+  // ---- variantes ----------------------------------------------------------
+
+  /** Lista de versiones, la más reciente primero. */
+  variantes(): { id: string; nombre: string; activa: boolean; modificada: number }[] {
+    const { variantes, activaId } = store();
+    return [...variantes]
+      .sort((a, b) => b.modificada - a.modificada)
+      .map((v) => ({ id: v.id, nombre: v.nombre, activa: v.id === activaId, modificada: v.modificada }));
+  },
+
+  /**
+   * Duplica la variante activa y salta a la copia.
+   *
+   * Duplicar y no crear en blanco es lo que pide el caso real: se parte del CV
+   * que ya funciona y se adapta a una oferta concreta, no se empieza de cero.
+   */
+  duplicarVariante(nombre: string): string {
+    return store().crearVariante(nombre.trim() || 'Copia', structuredClone(doc()));
+  },
+
+  /** Crea una versión vacía, para empezar un CV distinto. */
+  nuevaVariante(nombre: string): string {
+    return store().crearVariante(nombre.trim() || 'Nuevo CV', emptyDocument());
+  },
+
+  renombrarVariante(id: string, nombre: string): void {
+    store().renombrarVariante(id, nombre);
+  },
+
+  /** No hace nada si es la última: la app nunca se queda sin documento. */
+  eliminarVariante(id: string): void {
+    store().eliminarVariante(id);
+  },
+
+  /** Cambiar de variante vacía el historial (ver `store.ts`). */
+  activarVariante(id: string): void {
+    store().activarVariante(id);
   },
 
   // ---- historial ----------------------------------------------------------

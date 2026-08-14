@@ -1,5 +1,5 @@
 import { commands } from '../core/commands';
-import { useCVStore, useResolvedTheme } from '../core/store';
+import { docActivo, useCVStore, useResolvedTheme } from '../core/store';
 import { THEMES } from '../core/themes';
 import { fontIdFromStack, fontsByRole, getFont } from '../core/fonts';
 import type { Density } from '../core/types';
@@ -28,8 +28,8 @@ const DENSITIES: { value: Density; label: string; hint: string }[] = [
 ];
 
 export function DesignForm() {
-  const themeId = useCVStore((st) => st.doc.themeId);
-  const overrides = useCVStore((st) => st.doc.overrides);
+  const themeId = useCVStore((st) => docActivo(st).themeId);
+  const overrides = useCVStore((st) => docActivo(st).overrides);
   // Colores efectivos: si el usuario no ha tocado nada, muestran los del tema.
   const theme = useResolvedTheme();
 
