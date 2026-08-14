@@ -10,6 +10,8 @@ const ZOOM_STEPS = [0.5, 0.6, 0.7, 0.8, 0.9, 1, 1.25, 1.5];
 
 export function Preview() {
   const doc = useCVStore((s) => s.doc);
+  const puedeDeshacer = useCVStore((s) => s.pasado.length > 0);
+  const puedeRehacer = useCVStore((s) => s.futuro.length > 0);
   const zoom = useCVStore((s) => s.zoom);
   const theme = useResolvedTheme();
   const pageRef = useRef<HTMLDivElement>(null);
@@ -40,6 +42,26 @@ export function Preview() {
     document.documentElement.dataset.pages = String(metrics.pages);
   }, [metrics.pages]);
 
+  /**
+   * Atajos de teclado. Ctrl/Cmd+Z y Ctrl/Cmd+Shift+Z.
+   *
+   * Se capturan globalmente, también dentro de los campos de texto. Podría
+   * parecer que ahí debería mandar el deshacer nativo del navegador, pero los
+   * campos son controlados: su valor sale del store, así que el nativo no
+   * tendría nada coherente que deshacer. El del documento es el único que
+   * funciona de verdad.
+   */
+  useEffect(() => {
+    function alPulsar(e: KeyboardEvent) {
+      if (!(e.ctrlKey || e.metaKey) || e.key.toLowerCase() !== 'z') return;
+      e.preventDefault();
+      if (e.shiftKey) commands.redo();
+      else commands.undo();
+    }
+    window.addEventListener('keydown', alPulsar);
+    return () => window.removeEventListener('keydown', alPulsar);
+  }, []);
+
   // Encajar al abrir, para no aterrizar en una hoja cortada.
   useEffect(() => {
     fitToWidth();
@@ -50,6 +72,27 @@ export function Preview() {
   return (
     <main className={styles.wrap} ref={viewportRef} id="lienzo" aria-label="Vista previa del CV">
       <div className={`${styles.toolbar} toolbar`}>
+        <div className={styles.zoomGroup}>
+          <button
+            className="btn btn-ghost btn-sm"
+            onClick={() => commands.undo()}
+            disabled={!puedeDeshacer}
+            aria-label="Deshacer"
+            title="Deshacer (Ctrl+Z)"
+          >
+            ↶
+          </button>
+          <button
+            className="btn btn-ghost btn-sm"
+            onClick={() => commands.redo()}
+            disabled={!puedeRehacer}
+            aria-label="Rehacer"
+            title="Rehacer (Ctrl+Mayús+Z)"
+          >
+            ↷
+          </button>
+        </div>
+
         <div className={styles.zoomGroup}>
           <button
             className="btn btn-ghost btn-sm"
