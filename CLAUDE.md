@@ -539,7 +539,31 @@ Solo tocan TEMA y PLANTILLA; el contenido nunca se lee de la URL.
     (teclear, arrastrar un color) declaran una clave de fusión y sus cambios
     seguidos son un solo paso; los estructurales siempre son un paso propio.
 
-**Pendiente de fase 5:** i18n.
+### DECISIÓN TOMADA (Iván): i18n descartada
+
+No se traduce ni la interfaz ni el CV. **Las variantes cubren el caso real**:
+una versión del documento por idioma, cada una con su contenido escrito en él.
+Traducir la interfaz no aporta nada mientras la use quien la escribió, y §3 ya
+la listaba como no-objetivo de v1.
+
+Lo que las variantes NO cubren, y conviene saberlo antes de que sorprenda: las
+cadenas que la app escribe **dentro** del CV siguen en castellano. Medidas, son
+cuatro visibles — «Perfil profesional», «Software:», «Actualidad» y el pie
+«Página X de Y»— más el `lang="es"` y las etiquetas de accesibilidad de las
+estrellas.
+
+De esas, el rótulo del perfil **sí se arregló**, porque no era un problema de
+idioma sino una incoherencia: era la única sección cuyo título no salía del
+dato. Ahora es `basics.summaryTitle`, editable como cualquier otro. Las otras
+tres se dejan fijas a conciencia: hacerlas configurables metería campos que
+casi nadie tocaría, a cambio de un caso poco frecuente.
+
+**Si algún día hiciera falta un CV en inglés impecable**, el trabajo pendiente
+está acotado: tres cadenas en `templates/shared.ts` y las plantillas, el pie en
+`print.css` —que necesita un `data-` en el raíz, porque `@page` solo hereda de
+ahí— y el atributo `lang`.
+
+**Fase 5 cerrada.**
 
 ### Variantes del documento
 

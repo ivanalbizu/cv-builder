@@ -71,6 +71,13 @@ export const TOOLS: Tool[] = [
       name: { kind: 'string', description: 'Nombre completo', optional: true },
       title: { kind: 'string', description: 'Puesto al que opta', optional: true },
       summary: { kind: 'string', description: 'Perfil profesional, un párrafo', optional: true },
+      summaryTitle: {
+        kind: 'string',
+        description:
+          'Rótulo de la sección del perfil. Cámbialo si adaptas el CV a otro idioma: ' +
+          'la app no traduce el contenido, pero este título es un dato más. Vacío = sin rótulo.',
+        optional: true,
+      },
     },
     run: (a) => {
       commands.setBasics(a);

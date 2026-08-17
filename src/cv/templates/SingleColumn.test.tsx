@@ -76,3 +76,30 @@ describe('SingleColumn', () => {
     expect(() => renderCV(empty)).not.toThrow();
   });
 });
+
+describe('rótulo del perfil', () => {
+  it('usa el que traiga el documento', () => {
+    const data = structuredClone(SEED_DATA);
+    data.basics.summaryTitle = 'Professional profile';
+    renderCV(data);
+    expect(screen.getByRole('heading', { name: 'Professional profile' })).toBeInTheDocument();
+    expect(screen.queryByText('Perfil profesional')).not.toBeInTheDocument();
+  });
+
+  it('un documento antiguo, sin el campo, conserva su título', () => {
+    // El respaldo existe para eso: un CV guardado antes de que fuera editable
+    // no puede perder el rótulo al abrirlo.
+    const data = structuredClone(SEED_DATA);
+    delete data.basics.summaryTitle;
+    renderCV(data);
+    expect(screen.getByRole('heading', { name: 'Perfil profesional' })).toBeInTheDocument();
+  });
+
+  it('vaciarlo quita el rótulo pero deja el texto', () => {
+    const data = structuredClone(SEED_DATA);
+    data.basics.summaryTitle = '';
+    renderCV(data);
+    expect(screen.queryByRole('heading', { name: /perfil/i })).not.toBeInTheDocument();
+    expect(screen.getByText(/Recepcionista y auditor de noche/)).toBeInTheDocument();
+  });
+});

@@ -23,6 +23,7 @@ export const SEED_DATA: CVData = {
   basics: {
     name: 'Marcos Ibáñez Herrera',
     title: 'Recepcionista de Hotel',
+    summaryTitle: 'Perfil profesional',
     summary:
       'Recepcionista y auditor de noche con más de 10 años de experiencia en hoteles de 3 y 4 ' +
       'estrellas, hoteles boutique y apartamentos turísticos. Facilidad de integración y ' +

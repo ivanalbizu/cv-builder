@@ -41,6 +41,14 @@ export interface Basics {
   name: string;
   title: string;
   summary?: string;
+  /**
+   * Rótulo de la sección del perfil.
+   *
+   * Es un DATO y no texto fijo, como el de cualquier otra sección: era la única
+   * cuyo título no se podía tocar. Así se puede escribir «Sobre mí», o
+   * «Professional profile» en una variante en inglés. Vacío = sin rótulo.
+   */
+  summaryTitle?: string;
   photo?: DataURL | null;
   photoOptions: PhotoOptions;
   contact: ContactLink[];

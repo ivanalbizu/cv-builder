@@ -2,6 +2,7 @@ import { useRef, useState } from 'react';
 import { commands } from '../core/commands';
 import { docActivo, useCVStore } from '../core/store';
 import type { ContactKind } from '../core/types';
+import { tituloPerfil } from '../cv/templates/shared';
 import { fileToDataURL, photoWarning } from '../lib/image';
 import { PhotoCropper } from './PhotoCropper';
 import { Actions, Field, Panel, Row, TextAreaField, TextField } from './ui';
@@ -50,6 +51,13 @@ export function BasicsForm() {
           value={basics.title}
           onChange={(v) => commands.setBasics({ title: v })}
           placeholder="Recepcionista de Hotel"
+        />
+        <TextField
+          label="Rótulo del perfil"
+          value={tituloPerfil(basics)}
+          onChange={(v) => commands.setBasics({ summaryTitle: v })}
+          placeholder="Perfil profesional"
+          hint="Cámbialo por «Sobre mí», o por «Professional profile» en una versión en inglés. Vacío = sin rótulo."
         />
         <TextAreaField
           label="Perfil profesional"

@@ -8,7 +8,7 @@ import type {
   TemplateProps,
 } from '../../core/types';
 import { Icon, Rating } from '../icons';
-import { CONTACT_ICON, formatDates, isNarrowSection } from './shared';
+import { CONTACT_ICON, formatDates, isNarrowSection, tituloPerfil } from './shared';
 import s from './SingleColumn.module.css';
 
 /**
@@ -213,10 +213,12 @@ export function SingleColumn({ data }: TemplateProps) {
       <div className={s.body}>
         {basics.summary ? (
           <section className={s.section}>
-            <h2 className={s.sectionTitle}>
-              <Icon name="user" />
-              Perfil profesional
-            </h2>
+            {tituloPerfil(basics) ? (
+              <h2 className={s.sectionTitle}>
+                <Icon name="user" />
+                {tituloPerfil(basics)}
+              </h2>
+            ) : null}
             <p className={s.summary}>{basics.summary}</p>
           </section>
         ) : null}
