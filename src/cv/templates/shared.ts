@@ -1,4 +1,4 @@
-import type { ContactKind, ExperienceItem, Section } from '../../core/types';
+import type { Basics, ContactKind, ExperienceItem, Section } from '../../core/types';
 
 /**
  * Piezas compartidas por todas las plantillas.
@@ -24,4 +24,16 @@ export function formatDates(item: ExperienceItem): string {
 /** Secciones cortas, aptas para una columna estrecha. */
 export function isNarrowSection(section: Section): boolean {
   return section.type === 'languages' || section.type === 'skills';
+}
+
+/**
+ * Rótulo efectivo del perfil.
+ *
+ * El respaldo existe por los documentos guardados antes de que el campo fuera
+ * editable: sin él, un CV de hace meses perdería su título al abrirlo. Una
+ * cadena vacía es una elección deliberada —quitar el rótulo—, así que se
+ * respeta y no se rellena.
+ */
+export function tituloPerfil(basics: Basics): string {
+  return basics.summaryTitle ?? 'Perfil profesional';
 }

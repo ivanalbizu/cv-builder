@@ -8,7 +8,7 @@ import type {
   TemplateProps,
 } from '../../core/types';
 import { Icon, Rating } from '../icons';
-import { CONTACT_ICON, formatDates, isNarrowSection } from './shared';
+import { CONTACT_ICON, formatDates, isNarrowSection, tituloPerfil } from './shared';
 import s from './Sidebar.module.css';
 
 /**
@@ -196,10 +196,12 @@ export function Sidebar({ data }: TemplateProps) {
       <main className={s.main}>
         {basics.summary ? (
           <section className={s.section}>
-            <h2 className={s.sectionTitle}>
-              <Icon name="user" />
-              Perfil profesional
-            </h2>
+            {tituloPerfil(basics) ? (
+              <h2 className={s.sectionTitle}>
+                <Icon name="user" />
+                {tituloPerfil(basics)}
+              </h2>
+            ) : null}
             <p className={s.summary}>{basics.summary}</p>
           </section>
         ) : null}
